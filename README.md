@@ -16,6 +16,6 @@ Only tested on
 # Runnning
 Clone this repository and run by following command:  
 ```
-$ cd /path/to/ssl-autosetup/
+$ cd /path/to/ssl-setup/
 $ bash ./ssl-autosetup.sh
 ```
