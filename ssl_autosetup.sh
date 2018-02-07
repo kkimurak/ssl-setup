@@ -7,7 +7,7 @@
 
 set -Ceu
 
-SSL_DIR = ""
+declare SSL_DIR=""
 
 function get_os_distribution() {
     # Copyright (c) 2016 Kohei Arao
