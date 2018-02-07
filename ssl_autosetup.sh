@@ -106,12 +106,7 @@ function install_libraries() {
             sudo pacman -Syyu
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo pacman -Sy git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml --needed 
-            # I must test "pacman -Sy gtkmm" will work for ssl-refbox
-            # wget http://ftp.gnome.org/pub/GNOME/sources/gtkmm/2.4/gtkmm-2.4.0.tar.gz
-            # tar xf gtkmm-2.4.0.tar.gz && rm gtkmm-2.4.0.tar.gz && cd gtkmm-2.4.0
-            # ./configure --prefix=/usr && make
-            # echo "Not supported now. Wait for update.";exit
+            sudo pacman -Sy git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml --needed || echo "Failed to install some packages"
             ;;
         * )
             echo "Not supported.";
@@ -119,7 +114,7 @@ function install_libraries() {
             ;;
     esac
     
-    # install "vartypes" for grSim
+    # install "vartypes" that required by grSim
     git clone https://github.com/szi/vartypes.git || echo "Failed to clone vartypes"
     cd vartypes
     mkdir build && cd "$_"
@@ -188,7 +183,7 @@ function selector_fix_logplayer() {
     echo ""
     echo "[Jan 7 ,2018]Codes of LogPlayer has some probrems."
     echo "see : https://github.com/RoboCup-SSL/ssl-logtools/pull/1"
-    echo -n "Do you want to fix them automatically?[y/N default:y]:"
+    echo -n "Do you want to fix them automatically?[Y/n]:"
     read -r -t 60 is_fix
     case "$is_fix" in
         "" | "y" | "Y" | "yes" | "YES" | "Yes" )
