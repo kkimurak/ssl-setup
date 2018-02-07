@@ -109,7 +109,7 @@ function install_libraries() {
             sudp pacman -Syyu
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo pacman -Sy git gcc g++ qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml --needed 
+            sudo pacman -Sy git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml --needed 
             # I must test "pacman -Sy gtkmm" will work for ssl-refbox
             # wget http://ftp.gnome.org/pub/GNOME/sources/gtkmm/2.4/gtkmm-2.4.0.tar.gz
             # tar xf gtkmm-2.4.0.tar.gz && rm gtkmm-2.4.0.tar.gz && cd gtkmm-2.4.0
