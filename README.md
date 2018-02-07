@@ -19,5 +19,5 @@ Only tested on
 Clone this repository and run by following command:  
 ```
 $ cd /path/to/ssl-setup/
-$ bash ./ssl-autosetup.sh
+$ bash ./ssl_autosetup.sh
 ```
