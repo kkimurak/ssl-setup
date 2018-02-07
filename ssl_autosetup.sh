@@ -82,6 +82,7 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             sudo dnf -y install git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel zlib || echo "Failed to instlal some packages."
 
+            # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
             tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
             cd ode-0.13
@@ -247,7 +248,6 @@ function install_dev_tools() {
                     ;;
                 "arch" )
                     sudo pacman -Sy htop wireshark-cli strace ltrace vim
-                    # echo "Not supported now. Wait for update.";exit
                     ;;
                 * )
                     echo "Not supported.";
