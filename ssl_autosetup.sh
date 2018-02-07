@@ -7,8 +7,6 @@
 
 set -Ceu
 
-declare SSL_DIR=""
-
 function get_os_distribution() {
     # Copyright (c) 2016 Kohei Arao
     # https://github.com/koara-local/dotfiles
@@ -201,7 +199,7 @@ function selector_fix_logplayer() {
 }
 
 function fix_code_logplayer() {
-    cd "$SSL_DIR"/ssl-logtools/src/logplayer || exit
+    cd ../src/logplayer || exit
     echo "fix the code : logplayer/player.cpp"
     cp player.cpp  player_org.cpp
     sed -i '87a\ \ \ \ return true;' player.cpp && echo "Done"
