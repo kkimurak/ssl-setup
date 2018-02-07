@@ -7,9 +7,6 @@
 
 set -Ceu
 
-DISTRIBU=""
-SSL_DIR=""
-
 function get_os_distribution() {
     # Copyright (c) 2016 Kohei Arao
     # https://github.com/koara-local/dotfiles
