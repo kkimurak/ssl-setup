@@ -227,7 +227,7 @@ function fix_code_logplayer() {
     echo ">$ mkdir build && cd $_"
     echo ">$ cmake .. && make"
     echo ""
-    cd ../../
+    cd ../
 }
 
 function install_dev_tools() {
