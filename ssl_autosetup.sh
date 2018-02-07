@@ -132,7 +132,6 @@ function install_libraries() {
 }
 
 function build_ssl_tools() {
-    $SSL_DIR = ""
     echo "Download and build RoboCup-SSL Tools"
     echo "grSim , ssl-vision , ssl-refbox , ssl-logtools"
     echo ""
