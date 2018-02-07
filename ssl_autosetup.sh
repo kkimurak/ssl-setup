@@ -201,7 +201,7 @@ function selector_fix_logplayer() {
 }
 
 function fix_code_logplayer() {
-    cd "$SSL_DIR"/ssl-logtools/src/logplayer
+    cd "$SSL_DIR"/ssl-logtools/src/logplayer || exit
     echo "fix the code : logplayer/player.cpp"
     cp player.cpp  player_org.cpp
     sed -i '87a\ \ \ \ return true;' player.cpp && echo "Done"
