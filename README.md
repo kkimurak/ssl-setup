@@ -12,6 +12,7 @@ ssl-logtools (https://github.com/RoboCup-SSL/ssl-logtools)
 Only tested on
  * Fedora 27
  * Ubuntu 16.04
+ * Arch Linux 
 
 # Runnning
 Clone this repository and run by following command:  
