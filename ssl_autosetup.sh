@@ -103,7 +103,7 @@ function install_libraries() {
             ;;
         "arch" )
             # update
-            sudp pacman -Syyu
+            sudo pacman -Syyu
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             sudo pacman -Sy git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml --needed 
@@ -200,23 +200,23 @@ function selector_fix_logplayer() {
 }
 
 function fix_code_logplayer() {
-    #! /bin/bash
+    cd "$SSL_DIR"/ssl-logtools/src/logplayer
     echo "fix the code : logplayer/player.cpp"
-    cp "$SSL_DIR"/ssl-logtools/src/logplayer/player.cpp  "$SSL_DIR"/src/logplayer/player_org.cpp
-    sed -i '87a\ \ \ \ return true;'  "$SSL_DIR"/src/logplayer/player.cpp && echo "Done"
+    cp player.cpp  player_org.cpp
+    sed -i '87a\ \ \ \ return true;' player.cpp && echo "Done"
 
     echo "fix the code : logplayer/mainwindow.cpp"
-    cp "$SSL_DIR"/src/logplayer/mainwindow.cpp  "$SSL_DIR"/src/logplayer/mainwindow_org.cpp
-    sed -i -e '31a\ \ \ \ connect(m_ui->horizontalSlider, SIGNAL(sliderReleased()),SLOT(userSliderChange()));/*' "$SSL_DIR"/src/logplayer/mainwindow.cpp && echo -n "."
-    sed -i -e '33a\ \ \ \ */' -e '$ a \ '  "$SSL_DIR"/src/logplayer/mainwindow.cpp && echo -n "."
-    sed -i -e '$ a void MainWindow::userSliderChange()' "$SSL_DIR"/src/logplayer/mainwindow.cpp && echo -n "."
-    sed -i -e '$ a {' "$SSL_DIR"/src/logplayer/mainwindow.cpp && echo -n "."
-    sed -i -e '$ a \ \ \ \ int\ value\ =\ m_ui->horizontalSlider->value();' "$SSL_DIR"/src/logplayer/mainwindow.cpp && echo -n "."
-    sed -i -e '$ a \ \ \ \ seekFrame(value);' -e  '$a }'   "$SSL_DIR"/src/logplayer/mainwindow.cpp && echo "Done."
+    cp mainwindow.cpp  mainwindow_org.cpp
+    sed -i -e '31a\ \ \ \ connect(m_ui->horizontalSlider, SIGNAL(sliderReleased()),SLOT(userSliderChange()));/*' mainwindow.cpp && echo -n "."
+    sed -i -e '33a\ \ \ \ */' -e '$ a \ '  mainwindow.cpp && echo -n "."
+    sed -i -e '$ a void MainWindow::userSliderChange()' mainwindow.cpp && echo -n "."
+    sed -i -e '$ a {' mainwindow.cpp && echo -n "."
+    sed -i -e '$ a \ \ \ \ int\ value\ =\ m_ui->horizontalSlider->value();' mainwindow.cpp && echo -n "."
+    sed -i -e '$ a \ \ \ \ seekFrame(value);' -e  '$a }' mainwindow.cpp && echo "Done."
 
     echo "fix the code : logplayer/mainwindow.h"
-    cp ../src/logplayer/mainwindow.h ../src/logplayer/mainwindow_org.h
-    sed -i -e '38a \ \ \ \ void\ userSliderChange();' ../src/logplayer/mainwindow.h && echo "Done."
+    cp mainwindow.h mainwindow_org.h
+    sed -i -e '38a \ \ \ \ void\ userSliderChange();' mainwindow.h && echo "Done."
     echo ""
     echo "If there're any problem when you use logplayer, try them to re-build with original code:"
     echo ">$ cd /path/to/ssl-logtools // go to directory of ssl-logtools"
@@ -228,6 +228,7 @@ function fix_code_logplayer() {
     echo ">$ mkdir build && cd $_"
     echo ">$ cmake .. && make"
     echo ""
+    cd ../../
 }
 
 function install_dev_tools() {
