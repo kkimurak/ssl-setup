@@ -105,7 +105,16 @@ function install_libraries() {
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             ;;
         "arch" )
-            echo "Not supported now. Wait for update.";exit
+            # update
+            sudp pacman -Syyu
+
+            # install most of required packages for Robocup-SSL official tools (without Autoref)
+            sudo pacman -Sy git gcc g++ qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml --needed 
+            # I must test "pacman -Sy gtkmm" will work for ssl-refbox
+            # wget http://ftp.gnome.org/pub/GNOME/sources/gtkmm/2.4/gtkmm-2.4.0.tar.gz
+            # tar xf gtkmm-2.4.0.tar.gz && rm gtkmm-2.4.0.tar.gz && cd gtkmm-2.4.0
+            # ./configure --prefix=/usr && make
+            # echo "Not supported now. Wait for update.";exit
             ;;
         * )
             echo "Not supported.";
@@ -244,7 +253,8 @@ function install_dev_tools() {
                     sudo apt-get -y install htop wireshark strace ltrace vim
                     ;;
                 "arch" )
-                    echo "Not supported now. Wait for update.";exit
+                    sudo pacman -Sy htop wireshark-cli strace ltrace vim
+                    # echo "Not supported now. Wait for update.";exit
                     ;;
                 * )
                     echo "Not supported.";
