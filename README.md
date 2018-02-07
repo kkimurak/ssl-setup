@@ -1,5 +1,6 @@
 # ssl-autosetup  
 bash script that setup official RoboCup-SSL tools  (https://github.com/RoboCup-SSL)  
+with required packages / libraries
 
 Just for beginner.
 
@@ -10,8 +11,8 @@ ssl-refbox (https://github.com/RoboCup-SSL/ssl-refbox)
 ssl-logtools (https://github.com/RoboCup-SSL/ssl-logtools)
 
 Only tested on
- * Fedora 27
- * Ubuntu 16.04
+ * Fedora 27 or later
+ * Ubuntu 16.04 or later
  * Arch Linux 
 
 # Runnning
