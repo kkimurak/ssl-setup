@@ -175,55 +175,7 @@ function build_ssl_tools() {
 
     # ssl-logtools
     cd ../ssl-logtools && mkdir build && cd "$_"
-
-    selector_fix_logplayer
     cmake .. && make || echo "Failed to build ssl-logtools"
-}
-
-function selector_fix_logplayer() {
-    echo ""
-    echo "[Jan 7 ,2018]Codes of LogPlayer has some probrems."
-    echo "see : https://github.com/RoboCup-SSL/ssl-logtools/pull/1"
-    echo -n "Do you want to fix them automatically?[Y/n]:"
-    read -r -t 60 is_fix
-    case "$is_fix" in
-        "" | "y" | "Y" | "yes" | "YES" | "Yes" )
-            fix_code_logplayer -SSL_DIR || echo "ERROR:failed to fix codes.";;
-        * )
-            echo "Did not fix codes.";;
-    esac
-}
-
-function fix_code_logplayer() {
-    cd ../src/logplayer || exit
-    echo "fix the code : logplayer/player.cpp"
-    cp player.cpp  player_org.cpp
-    sed -i '87a\ \ \ \ return true;' player.cpp && echo "Done"
-
-    echo "fix the code : logplayer/mainwindow.cpp"
-    cp mainwindow.cpp  mainwindow_org.cpp
-    sed -i -e '31a\ \ \ \ connect(m_ui->horizontalSlider, SIGNAL(sliderReleased()),SLOT(userSliderChange()));/*' mainwindow.cpp && echo -n "."
-    sed -i -e '33a\ \ \ \ */' -e '$ a \ '  mainwindow.cpp && echo -n "."
-    sed -i -e '$ a void MainWindow::userSliderChange()' mainwindow.cpp && echo -n "."
-    sed -i -e '$ a {' mainwindow.cpp && echo -n "."
-    sed -i -e '$ a \ \ \ \ int\ value\ =\ m_ui->horizontalSlider->value();' mainwindow.cpp && echo -n "."
-    sed -i -e '$ a \ \ \ \ seekFrame(value);' -e  '$a }' mainwindow.cpp && echo "Done."
-
-    echo "fix the code : logplayer/mainwindow.h"
-    cp mainwindow.h mainwindow_org.h
-    sed -i -e '38a \ \ \ \ void\ userSliderChange();' mainwindow.h && echo "Done."
-    echo ""
-    echo "If there're any problem when you use logplayer, try them to re-build with original code:"
-    echo ">$ cd /path/to/ssl-logtools // go to directory of ssl-logtools"
-    echo ">$ rm src/logplayer/player.cpp src/logplayer/mainwindow.cpp src/logplayer/mainwindow.h"
-    echo ">$ mv src/logplayer/player_org.cpp src/logplayer/player.cpp"
-    echo ">$ mv src/logplayer/mainwindow_org.cpp src/logplayer/mainwindow.cpp"
-    echo ">$ mv src/logplayer/mainwindow_org.h src/logplayer/mainwindow.h"
-    echo ">$ sudo rm -r build"
-    echo ">$ mkdir build && cd $_"
-    echo ">$ cmake .. && make"
-    echo ""
-    cd ../../build
 }
 
 function install_dev_tools() {
