@@ -64,7 +64,7 @@ function get_os_distribution() {
 
 function install_libraries() {
     # temporary folder to build ODE, vartypes
-    local path_tmp=/home/"$USER"/Documents/tmp/
+    local path_tmp=/home/"$USER"/Documents/sslinst_tmp/
 
     if [ ! -e "$path_tmp" ]
     then
