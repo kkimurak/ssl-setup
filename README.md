@@ -15,7 +15,7 @@ Only tested on
  * Ubuntu 16.04 or later
  * Arch Linux 
 
-# Runnning
+# Running
 Clone this repository and run by following command:  
 ```
 $ cd /path/to/ssl-setup/
