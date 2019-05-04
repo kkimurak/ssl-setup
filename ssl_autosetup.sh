@@ -80,7 +80,7 @@ function install_libraries() {
             sudo dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo dnf -y install git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel zlib || echo "Failed to instlal some packages."
+            sudo dnf -y install git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib || echo "Failed to instlal some packages."
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
@@ -98,7 +98,7 @@ function install_libraries() {
             sudo apt-get purge boost* -y || echo "Failed to purge boost"
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo apt-get -y install git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev || echo "Failed to install some packages"
+            sudo apt-get -y install git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev || echo "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             ;;
