@@ -159,6 +159,7 @@ function build_ssl_tools() {
     git clone https://github.com/RoboCup-SSL/grSim.git || echo "Failed to clone grSim"
     git clone https://github.com/RoboCup-SSL/ssl-vision.git || echo "Failed to clone ssl-vision"
     git clone https://github.com/RoboCup-SSL/ssl-logtools.git || echo "Failed to clone ssl-logtools"
+    git clone https://github.com/RoboCup-SSL/ssl-autorefs.git --recursive|| echo "Failed to clone ssl-autorefs"
 
     # grsim
     cd grSim && mkdir build && cd "$_"
@@ -171,6 +172,10 @@ function build_ssl_tools() {
     # ssl-logtools
     cd ../ssl-logtools && mkdir build && cd "$_"
     cmake .. && make || echo "Failed to build ssl-logtools"
+
+    cd ../../ssl-autorefs
+    bash installDeps.sh
+    bash buildAll.sh
 
     # new ssl client (ssl-game-controller and so on)
     cd ../../
