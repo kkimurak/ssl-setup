@@ -129,7 +129,7 @@ function install_libraries() {
 
 function build_ssl_tools() {
     echo "Download and build RoboCup-SSL Tools"
-    echo "grSim , ssl-vision , ssl-refbox , ssl-logtools"
+    echo "grSim , ssl-vision , ssl-logtools , ssl-game-controller , ssl-vision-client"
     echo ""
     echo "Where do you want to place these application?"
     echo "(if you're a beginner, just press Enter)"
@@ -157,7 +157,6 @@ function build_ssl_tools() {
 
     # build grSim , ssl-vision , ssl-refbox , ssl-logtools
     git clone https://github.com/RoboCup-SSL/grSim.git || echo "Failed to clone grSim"
-    git clone https://github.com/RoboCup-SSL/ssl-refbox.git || echo "Failed to clone ssl-refbox"
     git clone https://github.com/RoboCup-SSL/ssl-vision.git || echo "Failed to clone ssl-vision"
     git clone https://github.com/RoboCup-SSL/ssl-logtools.git || echo "Failed to clone ssl-logtools"
 
@@ -168,10 +167,6 @@ function build_ssl_tools() {
     # ssl-vision/graphicalClient
     cd ../../ssl-vision
     make || echo "Failed to build ssl-vision"
-
-    # ssl-RefereeBox
-    cd ../ssl-refbox
-    make || echo "Failed to build ssl-refbox"
 
     # ssl-logtools
     cd ../ssl-logtools && mkdir build && cd "$_"
