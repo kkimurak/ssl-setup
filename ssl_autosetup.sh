@@ -176,6 +176,13 @@ function build_ssl_tools() {
     # ssl-logtools
     cd ../ssl-logtools && mkdir build && cd "$_"
     cmake .. && make || echo "Failed to build ssl-logtools"
+
+    # new ssl client (ssl-game-controller and so on)
+    cd ../
+    mkdir games && cd $_
+    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-game-controller/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'`
+    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-vision-client/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'`
+    chmod +x ssl*
 }
 
 function install_dev_tools() {
