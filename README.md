@@ -7,8 +7,9 @@ Just for beginner.
 # Support
 grSim (https://github.com/RoboCup-SSL/grSim)  
 ssl-vision (https://github.com/RoboCup-SSL/ssl-vision)  
-ssl-refbox (https://github.com/RoboCup-SSL/ssl-refbox)  
-ssl-logtools (https://github.com/RoboCup-SSL/ssl-logtools)
+ssl-logtools (https://github.com/RoboCup-SSL/ssl-logtools)  
+ssl-game-controller (https://github.com/RoboCup-SSL/ssl-game-controller)  
+ssl-vision-client (https://github.com/RoboCup-SSL/ssl-vision-client)
 
 Only tested on
  * Fedora 27 or later
