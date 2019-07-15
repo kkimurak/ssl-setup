@@ -232,6 +232,7 @@ function install_dev_tools() {
 # Script start from here
 echo "This installer will setup the tools for RoboCup-SSL in your computer."
 
+check_root
 install_libraries || exit
 build_ssl_tools || exit
 install_dev_tools
