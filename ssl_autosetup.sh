@@ -7,6 +7,13 @@
 
 set -Ceu
 
+function check_root {
+    if [ "$(whoami)" != "root" ]; then
+        echo "Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
+        exit 1
+    fi
+}
+
 function get_os_distribution() {
     # Copyright (c) 2016 Kohei Arao
     # https://github.com/koara-local/dotfiles
