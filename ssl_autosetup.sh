@@ -241,12 +241,24 @@ function install_dev_tools() {
 
 
 # Script start from here
+flag_build="--rec_to_build"
+
+if [ $# -lt 1 ]; then
 echo "This installer will setup the tools for RoboCup-SSL in your computer."
 
 check_root
 install_libraries || exit
-build_ssl_tools || exit
+    su $(logname) -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
 install_dev_tools
 
 echo ""
 echo "Done."
+elif [ $1 == ${flag_build} ]; then
+    if [ ${USER} == "root" ]; then
+        echo "[ERROR] invalid usage detected. please try again with no argment"
+    else
+        build_ssl_tools
+    fi
+else
+    echo "[ERROR] invalid argment"
+fi
