@@ -93,7 +93,7 @@ function install_vartyle() {
 
 function install_libraries() {
     # temporary folder to build ODE, vartypes
-    local path_tmp=/home/"$USER"/Documents/sslinst_tmp/
+    local path_tmp=/home/$(logname)/Documents/sslinst_tmp/
 
     if [ ! -e "$path_tmp" ]
     then
@@ -137,7 +137,7 @@ function install_libraries() {
             exit
             ;;
     esac
-    
+
     # install libraries for ssl-autorefs
     curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash
 
@@ -152,7 +152,7 @@ function build_ssl_tools() {
     echo ""
     echo "Where do you want to place these application?"
     echo "(if you're a beginner, just press Enter)"
-    echo -n "[default:/home/$USER/Documents/robocup/tools] >"
+    echo -n "[default:/home/$(logname)/Documents/robocup/tools] >"
     while :
     do
     read -r -t 60 SSL_DIR
@@ -165,7 +165,7 @@ function build_ssl_tools() {
             # nothing typed
             if test -z "$SSL_DIR"
             then
-                mkdir -p /home/"$USER"/Documents/robocup/tools && cd "$_" && break
+                mkdir -p /home/$(logname)/Documents/robocup/tools && cd "$_" && break
             else
                 echo "install for $SSL_DIR."
                 mkdir -p "$SSL_DIR" && cd "$_" && break
@@ -244,15 +244,15 @@ function install_dev_tools() {
 flag_build="--rec_to_build"
 
 if [ $# -lt 1 ]; then
-echo "This installer will setup the tools for RoboCup-SSL in your computer."
+    echo "This installer will setup the tools for RoboCup-SSL in your computer."
 
-check_root
-install_libraries || exit
+    check_root
+    install_libraries || exit
     su $(logname) -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
-install_dev_tools
+    install_dev_tools
 
-echo ""
-echo "Done."
+    echo ""
+    echo "Done."
 elif [ $1 == ${flag_build} ]; then
     if [ ${USER} == "root" ]; then
         echo "[ERROR] invalid usage detected. please try again with no argment"
