@@ -140,6 +140,7 @@ function install_libraries() {
     
     install_vartype
     cd ${script_dir}
+    rm -r ${path_tmp}
 }
 
 function build_ssl_tools() {
