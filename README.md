@@ -26,5 +26,6 @@ Clone this repository and run by following command:
 
 ```
 $ cd /path/to/ssl-setup/
-$ bash ./ssl_autosetup.sh
+# run this script as root
+$ sudo bash ./ssl_autosetup.sh
 ```
