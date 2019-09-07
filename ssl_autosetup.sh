@@ -9,10 +9,15 @@ set -Ceu
 
 script_dir=$(cd $(dirname $0); pwd)
 
+function error_end {
+    echo "[ERROR] Installation imcomplete."
+    exit 1
+}
+
 function check_root {
     if [ "$(whoami)" != "root" ]; then
-        echo "Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
-        exit 1
+        echo "[ERROR] Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
+        error_end
     fi
 }
 
