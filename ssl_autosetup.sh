@@ -7,6 +7,8 @@
 
 set -Ceu
 
+script_dir=$(cd $(dirname $0); pwd)
+
 function check_root {
     if [ "$(whoami)" != "root" ]; then
         echo "Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
@@ -137,9 +139,7 @@ function install_libraries() {
     esac
     
     install_vartype
-    cd ../../
-    rm -r "$path_tmp"
-
+    cd ${script_dir}
 }
 
 function build_ssl_tools() {
