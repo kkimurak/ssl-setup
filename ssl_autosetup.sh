@@ -69,6 +69,16 @@ function get_os_distribution() {
     echo "$distri_name"
 }
 
+function install_ode_013() {
+    wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
+    tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
+    cd ode-0.13
+    ./configure --disable-demos --enable-double-precision
+    make -s >/dev/null
+    make install
+    cd ../
+}
+
 function install_libraries() {
     # temporary folder to build ODE, vartypes
     local path_tmp=/home/"$USER"/Documents/sslinst_tmp/
@@ -90,13 +100,7 @@ function install_libraries() {
             dnf -y install git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib jq || echo "Failed to instlal some packages."
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
-            wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
-            tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
-            cd ode-0.13
-            ./configure --disable-demos --enable-double-precision
-            make
-            make install
-            cd ../
+            install_ode_013
             ;;
         "ubuntu" )
             # add install repository for boost
