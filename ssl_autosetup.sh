@@ -79,6 +79,16 @@ function install_ode_013() {
     cd ../
 }
 
+function install_vartyle() {
+    # install "vartypes" that required by grSim
+    git clone https://github.com/szi/vartypes.git || echo "Failed to clone vartypes"
+    cd vartypes
+    mkdir build && cd "$_"
+    cmake .. && make -s >/dev/null || echo "Failed to build vartypes"
+    make install || echo "Failed to install vartypes"
+    cd ../
+}
+
 function install_libraries() {
     # temporary folder to build ODE, vartypes
     local path_tmp=/home/"$USER"/Documents/sslinst_tmp/
@@ -126,13 +136,7 @@ function install_libraries() {
             ;;
     esac
     
-    # install "vartypes" that required by grSim
-    git clone https://github.com/szi/vartypes.git || echo "Failed to clone vartypes"
-    cd vartypes
-    mkdir build && cd "$_"
-    cmake .. && make || echo "Failed to build vartypes"
-    make install || echo "Failed to install vartypes"
-
+    install_vartype
     cd ../../
     rm -r "$path_tmp"
 
