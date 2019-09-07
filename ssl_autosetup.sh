@@ -86,7 +86,7 @@ function install_ode_013() {
     cd ../
 }
 
-function install_vartyle() {
+function install_vartype() {
     # install "vartypes" that required by grSim
     git clone https://github.com/szi/vartypes.git || echo "Failed to clone vartypes"
     cd vartypes
