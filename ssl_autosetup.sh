@@ -138,6 +138,9 @@ function install_libraries() {
             ;;
     esac
     
+    # install libraries for ssl-autorefs
+    curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash
+
     install_vartype
     cd ${script_dir}
     rm -r ${path_tmp}
@@ -190,7 +193,6 @@ function build_ssl_tools() {
     cmake .. && make || echo "Failed to build ssl-logtools"
 
     cd ../../ssl-autorefs
-    bash installDeps.sh
     bash buildAll.sh
 
     # new ssl client (ssl-game-controller and so on)
