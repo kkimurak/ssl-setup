@@ -84,10 +84,10 @@ function install_libraries() {
     case "$DISTRIBU" in
         "fedora" )
             # update system
-            sudo dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
+            dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo dnf -y install git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib jq || echo "Failed to instlal some packages."
+            dnf -y install git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib jq || echo "Failed to instlal some packages."
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
@@ -95,26 +95,26 @@ function install_libraries() {
             cd ode-0.13
             ./configure --disable-demos --enable-double-precision
             make
-            sudo make install
+            make install
             cd ../
             ;;
         "ubuntu" )
             # add install repository for boost
-            sudo add-apt-repository ppa:boost-latest/ppa -y || echo "Failed to add repository for boost"
-            sudo apt-get update || echo "Failed to update" 
-            sudo apt-get purge boost* -y || echo "Failed to purge boost"
+            add-apt-repository ppa:boost-latest/ppa -y || echo "Failed to add repository for boost"
+            apt-get update || echo "Failed to update" 
+            apt-get purge boost* -y || echo "Failed to purge boost"
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo apt-get -y install git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
+            apt-get -y install git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             ;;
         "arch" )
             # update
-            sudo pacman -Syyu
+            pacman -Syyu
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo pacman -Sy git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
+            pacman -Sy git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
             ;;
         * )
             echo "Not supported.";
@@ -127,10 +127,10 @@ function install_libraries() {
     cd vartypes
     mkdir build && cd "$_"
     cmake .. && make || echo "Failed to build vartypes"
-    sudo make install || echo "Failed to install vartypes"
+    make install || echo "Failed to install vartypes"
 
     cd ../../
-    sudo rm -r "$path_tmp"
+    rm -r "$path_tmp"
 
 }
 
@@ -207,13 +207,13 @@ function install_dev_tools() {
         "" | "y" | "Y" | "yes" | "Yes" | "YES" )
             case "$DISTRIBU" in
                 "fedora" )
-                    sudo dnf -y install htop wireshark strace ltrace vim
+                    dnf -y install htop wireshark strace ltrace vim
                     ;;
                 "ubuntu" )
-                    sudo apt-get -y install htop wireshark strace ltrace vim
+                    apt-get -y install htop wireshark strace ltrace vim
                     ;;
                 "arch" )
-                    sudo pacman -Sy htop wireshark-cli strace ltrace vim
+                    pacman -Sy htop wireshark-cli strace ltrace vim
                     ;;
                 * )
                     echo "Not supported.";
