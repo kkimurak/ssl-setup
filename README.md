@@ -11,7 +11,7 @@ Just for beginner.
 [ssl-vision](https://github.com/RoboCup-SSL/ssl-vision)  
 [ssl-logtools](https://github.com/RoboCup-SSL/ssl-logtools)  
 [ssl-game-controller](https://github.com/RoboCup-SSL/ssl-game-controller)  
-[ssl-vision-client](https://github.com/RoboCup-SSL/ssl-vision-client)
+[ssl-vision-client](https://github.com/RoboCup-SSL/ssl-vision-client)  
 [ssl-autorefs](https://github.com/RoboCup-SSL/ssl-autorefs)
 
 Only tested on
