@@ -120,10 +120,10 @@ function install_libraries() {
             install_ode_013
             ;;
         "ubuntu" )
-            apt-get update || echo "Failed to update" 
+            apt update -qq || echo "Failed to update" 
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            apt-get -y install curl git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
+            apt-get -qq -y install curl git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             ;;
@@ -225,7 +225,7 @@ function install_dev_tools() {
                     dnf -y install htop wireshark strace ltrace vim
                     ;;
                 "ubuntu" )
-                    apt-get -y install htop wireshark strace ltrace vim
+                    apt-get -qq -y install htop wireshark strace ltrace vim
                     ;;
                 "arch" )
                     pacman -Sy htop wireshark-cli strace ltrace vim
