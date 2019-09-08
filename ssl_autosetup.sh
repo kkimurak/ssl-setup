@@ -143,7 +143,9 @@ function install_libraries() {
     # install libraries for ssl-autorefs
     curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash
 
-    install_vartype
+    if ! ls /usr/local/lib/*vartypes* > /dev/null; then
+        install_vartype
+    fi
     cd ${script_dir}
     rm -r ${path_tmp}
 }
