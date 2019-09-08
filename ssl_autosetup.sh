@@ -120,11 +120,8 @@ function install_libraries() {
             install_ode_013
             ;;
         "ubuntu" )
-            # add install repository for boost
-            add-apt-repository ppa:boost-latest/ppa -y || echo "Failed to add repository for boost"
             apt-get update || echo "Failed to update" 
-            apt-get purge boost* -y || echo "Failed to purge boost"
-
+            
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             apt-get -y install curl git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
 
