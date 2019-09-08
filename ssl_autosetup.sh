@@ -7,6 +7,20 @@
 
 set -Ceu
 
+script_dir=$(cd $(dirname $0); pwd)
+
+function error_end {
+    echo "[ERROR] Installation imcomplete."
+    exit 1
+}
+
+function check_root {
+    if [ "$(whoami)" != "root" ]; then
+        echo "[ERROR] Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
+        error_end
+    fi
+}
+
 function get_os_distribution() {
     # Copyright (c) 2016 Kohei Arao
     # https://github.com/koara-local/dotfiles
@@ -62,9 +76,29 @@ function get_os_distribution() {
     echo "$distri_name"
 }
 
+function install_ode_013() {
+    wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
+    tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
+    cd ode-0.13
+    ./configure --disable-demos --enable-double-precision
+    make -s >/dev/null
+    make install
+    cd ../
+}
+
+function install_vartype() {
+    # install "vartypes" that required by grSim
+    git clone https://github.com/szi/vartypes.git || echo "Failed to clone vartypes"
+    cd vartypes
+    mkdir build && cd "$_"
+    cmake .. && make -s >/dev/null || echo "Failed to build vartypes"
+    make install || echo "Failed to install vartypes"
+    cd ../
+}
+
 function install_libraries() {
     # temporary folder to build ODE, vartypes
-    local path_tmp=/home/"$USER"/Documents/sslinst_tmp/
+    local path_tmp=/home/$(logname)/Documents/sslinst_tmp/
 
     if [ ! -e "$path_tmp" ]
     then
@@ -77,54 +111,44 @@ function install_libraries() {
     case "$DISTRIBU" in
         "fedora" )
             # update system
-            sudo dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
+            dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo dnf -y install git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib jq || echo "Failed to instlal some packages."
+            dnf -y install curl git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib jq || echo "Failed to instlal some packages."
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
-            wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
-            tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
-            cd ode-0.13
-            ./configure --disable-demos --enable-double-precision
-            make
-            sudo make install
-            cd ../
+            install_ode_013
             ;;
         "ubuntu" )
             # add install repository for boost
-            sudo add-apt-repository ppa:boost-latest/ppa -y || echo "Failed to add repository for boost"
-            sudo apt-get update || echo "Failed to update" 
-            sudo apt-get purge boost* -y || echo "Failed to purge boost"
+            add-apt-repository ppa:boost-latest/ppa -y || echo "Failed to add repository for boost"
+            apt-get update || echo "Failed to update" 
+            apt-get purge boost* -y || echo "Failed to purge boost"
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo apt-get -y install git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
+            apt-get -y install curl git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             ;;
         "arch" )
             # update
-            sudo pacman -Syyu
+            pacman -Syyu
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            sudo pacman -Sy git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
+            pacman -Sy curl git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
             ;;
         * )
             echo "Not supported.";
             exit
             ;;
     esac
-    
-    # install "vartypes" that required by grSim
-    git clone https://github.com/szi/vartypes.git || echo "Failed to clone vartypes"
-    cd vartypes
-    mkdir build && cd "$_"
-    cmake .. && make || echo "Failed to build vartypes"
-    sudo make install || echo "Failed to install vartypes"
 
-    cd ../../
-    sudo rm -r "$path_tmp"
+    # install libraries for ssl-autorefs
+    curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash
 
+    install_vartype
+    cd ${script_dir}
+    rm -r ${path_tmp}
 }
 
 function build_ssl_tools() {
@@ -133,7 +157,7 @@ function build_ssl_tools() {
     echo ""
     echo "Where do you want to place these application?"
     echo "(if you're a beginner, just press Enter)"
-    echo -n "[default:/home/$USER/Documents/robocup/tools] >"
+    echo -n "[default:/home/$(logname)/Documents/robocup/tools] >"
     while :
     do
     read -r -t 60 SSL_DIR
@@ -146,7 +170,7 @@ function build_ssl_tools() {
             # nothing typed
             if test -z "$SSL_DIR"
             then
-                mkdir -p /home/"$USER"/Documents/robocup/tools && cd "$_" && break
+                mkdir -p /home/$(logname)/Documents/robocup/tools && cd "$_" && break
             else
                 echo "install for $SSL_DIR."
                 mkdir -p "$SSL_DIR" && cd "$_" && break
@@ -174,7 +198,6 @@ function build_ssl_tools() {
     cmake .. && make || echo "Failed to build ssl-logtools"
 
     cd ../../ssl-autorefs
-    bash installDeps.sh
     bash buildAll.sh
 
     # new ssl client (ssl-game-controller and so on)
@@ -200,13 +223,13 @@ function install_dev_tools() {
         "" | "y" | "Y" | "yes" | "Yes" | "YES" )
             case "$DISTRIBU" in
                 "fedora" )
-                    sudo dnf -y install htop wireshark strace ltrace vim
+                    dnf -y install htop wireshark strace ltrace vim
                     ;;
                 "ubuntu" )
-                    sudo apt-get -y install htop wireshark strace ltrace vim
+                    apt-get -y install htop wireshark strace ltrace vim
                     ;;
                 "arch" )
-                    sudo pacman -Sy htop wireshark-cli strace ltrace vim
+                    pacman -Sy htop wireshark-cli strace ltrace vim
                     ;;
                 * )
                     echo "Not supported.";
@@ -223,11 +246,24 @@ function install_dev_tools() {
 
 
 # Script start from here
-echo "This installer will setup the tools for RoboCup-SSL in your computer."
+flag_build="--rec_to_build"
 
-install_libraries || exit
-build_ssl_tools || exit
-install_dev_tools
+if [ $# -lt 1 ]; then
+    echo "This installer will setup the tools for RoboCup-SSL in your computer."
 
-echo ""
-echo "Done."
+    check_root
+    install_libraries || exit
+    su $(logname) -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
+    install_dev_tools
+
+    echo ""
+    echo "Done."
+elif [ $1 == ${flag_build} ]; then
+    if [ ${USER} == "root" ]; then
+        echo "[ERROR] invalid usage detected. please try again with no argment"
+    else
+        build_ssl_tools
+    fi
+else
+    echo "[ERROR] invalid argment"
+fi
