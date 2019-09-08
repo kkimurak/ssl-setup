@@ -88,7 +88,7 @@ function install_ode_013() {
 
 function install_vartype() {
     # install "vartypes" that required by grSim
-    git clone https://github.com/szi/vartypes.git || echo "Failed to clone vartypes"
+    git clone https://github.com/jpfeltracco/vartypes.git || echo "Failed to clone vartypes"
     cd vartypes
     mkdir build && cd "$_"
     cmake .. && make -s >/dev/null || echo "Failed to build vartypes"
