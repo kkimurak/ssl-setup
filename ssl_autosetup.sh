@@ -159,7 +159,7 @@ function build_ssl_tools() {
     echo -n "[default:/home/$(logname)/Documents/robocup/tools] >"
     while :
     do
-    read -r -t 60 SSL_DIR
+    read -r -t 60 SSL_DIR || if [ "$?" == "142" ] ; then echo " set to default..."; fi
     case $SSL_DIR in
         # if typed so it seems to be not problem, but can't do "git clone"
         "home/" | "home" | "/home" | "/home/" )
@@ -217,7 +217,7 @@ function install_dev_tools() {
     echo "strace & ltrace - debug tools"
     echo -n "[Y/n]:"
 
-    read -r -t 60 ins_tools
+    read -r -t 60 ins_tools || if [ "$?" == "142" ] ; then echo " set to default..."; fi
     case "$ins_tools" in
         "" | "y" | "Y" | "yes" | "Yes" | "YES" )
             case "$DISTRIBU" in
