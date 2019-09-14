@@ -100,6 +100,12 @@ function install_libraries() {
     # temporary folder to build ODE, vartypes
     local path_tmp=/home/$(logname)/Documents/sslinst_tmp/
 
+    # packages required to run this script
+    local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq"
+    local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel"
+    local dnf_pkg_ssl_vision="qt-devel eigen3 libjpeg libpng v4l-utils libdc1394 libdc1394-devel protobuf-compiler protobuf-devel opencv-devel freeglut-devel zlib"
+    local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
+
     if [ ! -e "$path_tmp" ]
     then
         mkdir -p "$path_tmp"
@@ -114,7 +120,7 @@ function install_libraries() {
             dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            dnf -y install curl git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib jq || echo "Failed to instlal some packages."
+            dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} || echo "Failed to instlal some packages."
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             install_ode_013
