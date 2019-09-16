@@ -156,7 +156,7 @@ function install_libraries() {
     esac
 
     # install libraries for ssl-autorefs
-    yes | curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash
+    yes | curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash;
 
     if ! ls /usr/local/lib/*vartypes* > /dev/null; then
         install_vartype
