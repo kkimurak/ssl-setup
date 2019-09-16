@@ -136,10 +136,12 @@ function install_libraries() {
             ;;
         "arch" )
             # update
-            pacman -Syyu
+            yes | pacman -Syyu
+
+            pacman -S --noconfirm --needed base-devel
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            pacman -Sy curl git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
+            yes | pacman -S curl git gcc qt5-base eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
             ;;
         * )
             echo "Not supported.";
@@ -235,7 +237,7 @@ function install_dev_tools() {
                     apt-get -qq -y install htop wireshark strace ltrace vim
                     ;;
                 "arch" )
-                    pacman -Sy htop wireshark-cli strace ltrace vim
+                    yes | pacman -S htop wireshark-cli strace ltrace vim
                     ;;
                 * )
                     echo "Not supported.";
