@@ -107,7 +107,7 @@ function install_libraries() {
     local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
     local dnf_pkg_ssl_autoref="patch"
 
-    local pacman_pkg_script="curl git cmake make gcc gcc-c++ jq wget"
+    local pacman_pkg_script="curl git cmake make gcc jq wget"
     local pacman_pkg_grsim="mesa glu ode qt5-base protobuf boost"
     local pacman_pkg_ssl_vision="qt5-base eigen protobuf libdc1394 jsoncpp v4l-utils"
     local pacman_pkg_ssl_logtools="protobuf zlib boost"
