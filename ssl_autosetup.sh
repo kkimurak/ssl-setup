@@ -148,6 +148,8 @@ function install_libraries() {
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || echo "Failed to install some packages"
+
+            install_ode_013
             ;;
         * )
             echo "Not supported.";
