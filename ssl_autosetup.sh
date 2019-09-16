@@ -107,6 +107,12 @@ function install_libraries() {
     local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
     local dnf_pkg_ssl_autoref="patch"
 
+    local pacman_pkg_script="curl git cmake make gcc gcc-c++ jq"
+    local pacman_pkg_grsim="mesa glu ode qt5-base protobuf boost"
+    local pacman_pkg_ssl_vision="qt5-base eigen protobuf libdc1394 jsoncpp v4l-utils"
+    local pacman_pkg_ssl_logtools="protobuf zlib boost"
+    local pacman_pkg_ssl_autoref="patch"
+
     if [ ! -e "$path_tmp" ]
     then
         mkdir -p "$path_tmp"
@@ -141,7 +147,7 @@ function install_libraries() {
             pacman -S --noconfirm --needed base-devel
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            yes | pacman -S curl git gcc qt5-base eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
+            yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || echo "Failed to install some packages"
             ;;
         * )
             echo "Not supported.";
