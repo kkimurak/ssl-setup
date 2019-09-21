@@ -113,6 +113,12 @@ function install_libraries() {
     local pacman_pkg_ssl_logtools="protobuf zlib boost"
     local pacman_pkg_ssl_autoref="patch"
 
+    local apt_pkg_script="curl git cmake make gcc jq wget"
+    local apt_pkg_grsim="build-essential qt5-default libwt5opengl5-dev libgl1-mesa-dev liglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-ev libboost-dev"
+    local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-dd libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
+    local apt_pkg_ssl_logtools="libprotobuf-dev protouf-compiler zlib1g-dev libboost-program-options-dev"
+    local apt_pkg_ssl_autorefs="patch"
+
     if [ ! -e "$path_tmp" ]
     then
         mkdir -p "$path_tmp"
@@ -136,7 +142,7 @@ function install_libraries() {
             apt update -qq || echo "Failed to update" 
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            apt-get -qq -y install curl git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
+            apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || echo "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             ;;
