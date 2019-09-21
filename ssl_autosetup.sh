@@ -114,9 +114,9 @@ function install_libraries() {
     local pacman_pkg_ssl_autoref="patch"
 
     local apt_pkg_script="curl git cmake make gcc jq wget"
-    local apt_pkg_grsim="build-essential qt5-default libwt5opengl5-dev libgl1-mesa-dev liglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-ev libboost-dev"
-    local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-dd libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
-    local apt_pkg_ssl_logtools="libprotobuf-dev protouf-compiler zlib1g-dev libboost-program-options-dev"
+    local apt_pkg_grsim="build-essential qt5-default libqt5opengl5-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-dev"
+    local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-dev libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
+    local apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
     local apt_pkg_ssl_autorefs="patch"
 
     if [ ! -e "$path_tmp" ]
