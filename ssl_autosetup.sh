@@ -150,8 +150,8 @@ function install_libraries() {
             install_ode_013
             ;;
         "ubuntu" )
-            apt update -qq || echo "Failed to update" 
-            apt upgrade -qq || echo "Failed to upgrade"
+            apt update -qq -y || echo "Failed to update" 
+            apt upgrade -qq -y || echo "Failed to upgrade"
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || echo "Failed to install some packages"
