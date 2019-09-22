@@ -96,6 +96,17 @@ function install_vartype() {
     cd ../
 }
 
+function install_opencv() {
+    # install opencv (>= 3.0) from source
+    wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || echo "Failed to downlod opencv"
+    tar xf 4.1.1.tar.gz
+    $ cd opencv*
+    mkdir build && cd $_
+    cmake .. -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DBUILD_CUDA_STABS_=OFF -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_JASPER=OFF -DBUILD_OPENEXR=OFF -DBUILD_PACKAGE=ON -DBUILD_PERF=TESTS=OFF -DBUILD_SHARED=LIBS=ON -DBUILD_TBB=OFF -DBUILD_TESTS=OFF -DBUILD_WITH_DEBUG_INFO=ON -DBUILD_ZLIB=ON -DBUILD_openv_apps=ON -DBUILD_opencv_calib3d=ON-DBUILD_opencv_core=ON -DBUILD_opencv_world=OFF -DCMAKE_BUILD_TYPE=DEBUG -DWITH_1394=ON -DWITH_FFMPEG=ON -DWITH_JPEG=ON -DWITH_QT=ON -DWITH_V4L=ON  
+    make
+    make install || echo "Failed to install OpenCV from source"
+}
+
 function install_libraries() {
     # temporary folder to build ODE, vartypes
     local path_tmp=/home/$(logname)/Documents/sslinst_tmp/
