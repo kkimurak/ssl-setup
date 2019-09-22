@@ -109,7 +109,7 @@ function install_opencv() {
 
 function install_libraries() {
     # temporary folder to build ODE, vartypes
-    local path_tmp=/home/$(logname)/Documents/sslinst_tmp/
+    local path_tmp=/home/${SUDO_USER}/Documents/sslinst_tmp/
 
     # packages required to run this script
     local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq"
@@ -191,12 +191,14 @@ function install_libraries() {
 }
 
 function build_ssl_tools() {
+    local ssl_dir_default="/home/${USER}/Documents/robocup/tools"
+
     echo "Download and build RoboCup-SSL Tools"
     echo "grSim , ssl-vision , ssl-logtools , ssl-game-controller , ssl-vision-client"
     echo ""
     echo "Where do you want to place these application?"
     echo "(if you're a beginner, just press Enter)"
-    echo -n "[default:/home/$(logname)/Documents/robocup/tools] >"
+    echo -n "[${ssl_dir_default}] >"
     while :
     do
     read -r -t 60 SSL_DIR || if [ "$?" == "142" ] ; then echo " set to default..."; fi
@@ -209,7 +211,7 @@ function build_ssl_tools() {
             # nothing typed
             if test -z "$SSL_DIR"
             then
-                mkdir -p /home/$(logname)/Documents/robocup/tools && cd "$_" && break
+                mkdir -p ${ssl_dir_default} && cd "$_" && break
             else
                 echo "install for $SSL_DIR."
                 mkdir -p "$SSL_DIR" && cd "$_" && break
@@ -292,7 +294,7 @@ if [ $# -lt 1 ]; then
 
     check_root
     install_libraries || exit
-    su $(logname) -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
+    su ${SUDO_USER} -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
     install_dev_tools
 
     echo ""
