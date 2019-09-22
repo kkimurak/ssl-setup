@@ -96,9 +96,39 @@ function install_vartype() {
     cd ../
 }
 
+function install_opencv() {
+    # install opencv (>= 3.0) from source
+    wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || echo "Failed to downlod opencv"
+    tar xf 4.1.1.tar.gz
+    cd opencv*
+    mkdir build && cd $_
+    cmake .. -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DBUILD_CUDA_STABS_=OFF -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_JASPER=OFF -DBUILD_OPENEXR=OFF -DBUILD_PACKAGE=ON -DBUILD_PERF=TESTS=OFF -DBUILD_SHARED=LIBS=ON -DBUILD_TBB=OFF -DBUILD_TESTS=OFF -DBUILD_WITH_DEBUG_INFO=ON -DBUILD_ZLIB=ON -DBUILD_openv_apps=ON -DBUILD_opencv_calib3d=ON-DBUILD_opencv_core=ON -DBUILD_opencv_world=OFF -DCMAKE_BUILD_TYPE=DEBUG -DWITH_1394=ON -DWITH_FFMPEG=ON -DWITH_JPEG=ON -DWITH_QT=ON -DWITH_V4L=ON  
+    make
+    make install || echo "Failed to install OpenCV from source"
+}
+
 function install_libraries() {
     # temporary folder to build ODE, vartypes
     local path_tmp=/home/$(logname)/Documents/sslinst_tmp/
+
+    # packages required to run this script
+    local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq"
+    local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel"
+    local dnf_pkg_ssl_vision="qt-devel eigen3 libjpeg libpng v4l-utils libdc1394 libdc1394-devel protobuf-compiler protobuf-devel opencv-devel freeglut-devel zlib"
+    local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
+    local dnf_pkg_ssl_autoref="patch"
+
+    local pacman_pkg_script="curl git cmake make gcc jq wget"
+    local pacman_pkg_grsim="mesa glu ode qt5-base protobuf boost"
+    local pacman_pkg_ssl_vision="qt5-base eigen protobuf libdc1394 jsoncpp v4l-utils opencv"
+    local pacman_pkg_ssl_logtools="protobuf zlib boost"
+    local pacman_pkg_ssl_autoref="patch"
+
+    local apt_pkg_script="curl git cmake make gcc jq wget"
+    local apt_pkg_grsim="build-essential qt5-default libqt5opengl5-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-dev"
+    local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
+    local apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
+    local apt_pkg_ssl_autorefs="patch"
 
     if [ ! -e "$path_tmp" ]
     then
@@ -114,25 +144,35 @@ function install_libraries() {
             dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            dnf -y install curl git boost-devel clang cmake eigen3 libtool libyaml-devel make ninja-build protobuf-devel automake gcc gcc-c++ kernel-devel qt-devel mesa-libGL-devel mesa-libGLU-devel protobuf-compiler ode ode-devel gtkmm24-devel libjpeg libpng v4l-utils libdc1394 libdc1394-devel opencv-devel freeglut-devel zlib jq || echo "Failed to instlal some packages."
+            dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || echo "Failed to instlal some packages."
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             install_ode_013
             ;;
         "ubuntu" )
-            apt update -qq || echo "Failed to update" 
+            apt update -qq -y || echo "Failed to update" 
+            apt upgrade -qq -y || echo "Failed to upgrade"
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            apt-get -qq -y install curl git build-essential cmake libyaml-dev libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-all-dev g++ libeigen3-dev libdc1394-22 libdc1394-22-dev libv4l-0 zlib1g-dev libgtkmm-2.4-dev libopencv-dev freeglut3-dev jq || echo "Failed to install some packages"
+            apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || echo "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
+            # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
+            if [ $(cat /etc/os-release | grep VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g") == "16.04" ]; then
+                install_opencv
+            fi;
+
             ;;
         "arch" )
             # update
-            pacman -Syyu
+            yes | pacman -Syyu
+
+            pacman -S --noconfirm --needed base-devel
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            pacman -Sy curl git gcc qt4 eigen protobuf libdc1394 cmake v4l-utils jsoncpp mesa glu freeglut ode gtkmm zlib base-devel boost clang ninja libyaml jq --needed || echo "Failed to install some packages"
+            yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || echo "Failed to install some packages"
+
+            install_ode_013
             ;;
         * )
             echo "Not supported.";
@@ -141,7 +181,7 @@ function install_libraries() {
     esac
 
     # install libraries for ssl-autorefs
-    curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash
+    yes | curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh | bash;
 
     if ! ls /usr/local/lib/*vartypes* > /dev/null; then
         install_vartype
@@ -228,7 +268,7 @@ function install_dev_tools() {
                     apt-get -qq -y install htop wireshark strace ltrace vim
                     ;;
                 "arch" )
-                    pacman -Sy htop wireshark-cli strace ltrace vim
+                    yes | pacman -S htop wireshark-cli strace ltrace vim
                     ;;
                 * )
                     echo "Not supported.";
