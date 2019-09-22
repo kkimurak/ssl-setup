@@ -109,7 +109,7 @@ function install_opencv() {
 
 function install_libraries() {
     # temporary folder to build ODE, vartypes
-    local path_tmp=/home/$(logname)/Documents/sslinst_tmp/
+    local path_tmp=/home/${SUDO_USER}/Documents/sslinst_tmp/
 
     # packages required to run this script
     local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq"
@@ -294,7 +294,7 @@ if [ $# -lt 1 ]; then
 
     check_root
     install_libraries || exit
-    su $(logname) -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
+    su ${SUDO_USER} -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
     install_dev_tools
 
     echo ""
