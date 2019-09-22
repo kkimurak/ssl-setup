@@ -158,7 +158,7 @@ function install_libraries() {
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
-            if [ $(cat /etc/os-release | grep VERSION_ID | sed "s:VERSION_ID=::g") == "16.04" ]; then
+            if [ $(cat /etc/os-release | grep VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g") == "16.04" ]; then
                 install_opencv
             fi;
 
