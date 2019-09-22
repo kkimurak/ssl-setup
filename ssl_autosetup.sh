@@ -157,6 +157,11 @@ function install_libraries() {
             apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || echo "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
+            # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
+            if [ $(cat /etc/os-release | grep VERSION_ID | sed "s:VERSION_ID=::g") == "16.04" ]; then
+                install_opencv
+            fi;
+
             ;;
         "arch" )
             # update
