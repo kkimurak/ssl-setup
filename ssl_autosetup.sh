@@ -233,12 +233,14 @@ function build_ssl_tools() {
     cmake .. && make || echo "Failed to build grSim"
 
     # ssl-vision/graphicalClient
-    cd ../../ssl-vision
+    cd ../../ssl-vision && mkdir build && cd "$_"
+    cmake .. -DUSE_QT5
     make || echo "Failed to build ssl-vision"
 
     # ssl-logtools
     cd ../ssl-logtools && mkdir build && cd "$_"
-    cmake .. && make || echo "Failed to build ssl-logtools"
+    cmake .. -DUSE_QT5
+    make || echo "Failed to build ssl-logtools"
 
     cd ../../ssl-autorefs
     bash buildAll.sh
