@@ -191,12 +191,14 @@ function install_libraries() {
 }
 
 function build_ssl_tools() {
+    local ssl_dir_default="/home/${USER}/Documents/robocup/tools"
+
     echo "Download and build RoboCup-SSL Tools"
     echo "grSim , ssl-vision , ssl-logtools , ssl-game-controller , ssl-vision-client"
     echo ""
     echo "Where do you want to place these application?"
     echo "(if you're a beginner, just press Enter)"
-    echo -n "[default:/home/$(logname)/Documents/robocup/tools] >"
+    echo -n "[${ssl_dir_default}] >"
     while :
     do
     read -r -t 60 SSL_DIR || if [ "$?" == "142" ] ; then echo " set to default..."; fi
@@ -209,7 +211,7 @@ function build_ssl_tools() {
             # nothing typed
             if test -z "$SSL_DIR"
             then
-                mkdir -p /home/$(logname)/Documents/robocup/tools && cd "$_" && break
+                mkdir -p ${ssl_dir_default} && cd "$_" && break
             else
                 echo "install for $SSL_DIR."
                 mkdir -p "$SSL_DIR" && cd "$_" && break
