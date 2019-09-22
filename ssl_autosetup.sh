@@ -129,6 +129,7 @@ function install_libraries() {
     local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
     local apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
     local apt_pkg_ssl_autorefs="patch"
+    local apt_pkg_opencv="build-essential libgtk2.0dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev"
 
     if [ ! -e "$path_tmp" ]
     then
@@ -159,6 +160,7 @@ function install_libraries() {
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
             if [ $(cat /etc/os-release | grep VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g") == "16.04" ]; then
+                apt-get -qq -y install ${apt_pkg_opencv}
                 install_opencv
             fi;
 
