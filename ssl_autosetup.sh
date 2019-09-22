@@ -234,12 +234,12 @@ function build_ssl_tools() {
 
     # ssl-vision/graphicalClient
     cd ../../ssl-vision && mkdir build && cd "$_"
-    cmake .. -DUSE_QT5
+    cmake .. -DUSE_QT5=true
     make || echo "Failed to build ssl-vision"
 
     # ssl-logtools
     cd ../ssl-logtools && mkdir build && cd "$_"
-    cmake .. -DUSE_QT5
+    cmake .. -DUSE_QT5=true
     make || echo "Failed to build ssl-logtools"
 
     cd ../../ssl-autorefs
