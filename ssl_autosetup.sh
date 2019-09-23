@@ -213,11 +213,11 @@ function build_ssl_tools() {
             # nothing typed
             if test -z "$SSL_DIR"
             then
-                mkdir -p ${ssl_dir_default} && cd "$_" && break
-            else
-                echo "install for $SSL_DIR."
-                mkdir -p "$SSL_DIR" && cd "$_" && break
+                SSL_DIR=${ssl_dir_default};
             fi
+            echo "install for $SSL_DIR."
+            mkdir -p "$SSL_DIR" && cd "$_" && break
+            
         ;;
     esac
     done
@@ -233,18 +233,20 @@ function build_ssl_tools() {
     cmake .. && make || echo "Failed to build grSim"
 
     # ssl-vision/graphicalClient
-    cd ../../ssl-vision
+    cd ${SSL_DIR}/ssl-vision && mkdir build && cd "$_"
+    cmake .. -DUSE_QT5=true
     make || echo "Failed to build ssl-vision"
 
     # ssl-logtools
-    cd ../ssl-logtools && mkdir build && cd "$_"
-    cmake .. && make || echo "Failed to build ssl-logtools"
+    cd ${SSL_DIR}/ssl-logtools && mkdir build && cd "$_"
+    cmake .. -DUSE_QT5=true
+    make || echo "Failed to build ssl-logtools"
 
-    cd ../../ssl-autorefs
+    cd ${SSL_DIR}/ssl-autorefs
     bash buildAll.sh
 
     # new ssl client (ssl-game-controller and so on)
-    cd ../
+    cd ${SSL_DIR}
     mkdir games && cd $_
     wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-game-controller/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'`
     wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-vision-client/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'`
