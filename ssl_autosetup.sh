@@ -284,7 +284,7 @@ function install_dev_tools() {
                     exit
                 ;;
             esac
-            xdg-open https://qiita.com/mfujimori/items/9fd41bcd8d1ce9170301
+            su ${SUDO_USER} -c "xdg-open https://qiita.com/mfujimori/items/9fd41bcd8d1ce9170301"
             ;;
         * )
             echo "Didn't install these tools."
