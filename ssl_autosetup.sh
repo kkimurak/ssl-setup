@@ -20,8 +20,7 @@ function error_end {
 
 function check_root {
     if [ "$(whoami)" != "root" ]; then
-        echo "[ERROR] Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
-        error_end
+        error_end 1 "Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
     fi
 }
 
