@@ -9,15 +9,18 @@ set -Ceu
 
 script_dir=$(cd $(dirname $0); pwd)
 
+# $1 exit code that fails - use $?
+# $2 error message you want to show. It will be shown using `echo`
 function error_end {
-    echo "[ERROR] Installation imcomplete."
+    echo "[SSL-SETUP ERROR] $2"
+    echo "[SSL-SETUP ERROR] process exits with code $1"
+    echo "[SSL-SETUP ERROR] Installation incomplete."
     exit 1
 }
 
 function check_root {
     if [ "$(whoami)" != "root" ]; then
-        echo "[ERROR] Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
-        error_end
+        error_end 1 "Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
     fi
 }
 
@@ -77,34 +80,34 @@ function get_os_distribution() {
 }
 
 function install_ode_013() {
-    wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || echo "Failed to download ode-0.13.tar.bz2. Check your internet connection."
+    wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || error_end $? "Failed to download ode-0.13.tar.bz2. Check your internet connection."
     tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
     cd ode-0.13
-    ./configure --disable-demos --enable-double-precision
-    make -s >/dev/null
-    make install
+    ./configure --disable-demos --enable-double-precision || error_end $? "ODE configuration failed"
+    make -s >/dev/null || error_end $? "Failed to build ode"
+    make install || error_end $? "Failed to install ode from source"
     cd ../
 }
 
 function install_vartype() {
     # install "vartypes" that required by grSim
-    git clone https://github.com/jpfeltracco/vartypes.git || echo "Failed to clone vartypes"
+    git clone https://github.com/jpfeltracco/vartypes.git || error_end $? "Failed to clone vartypes"
     cd vartypes
     mkdir build && cd "$_"
-    cmake .. && make -s >/dev/null || echo "Failed to build vartypes"
-    make install || echo "Failed to install vartypes"
+    cmake .. && make -s >/dev/null || error_end $? "Failed to build vartypes"
+    make install || error_end $? "Failed to install vartypes"
     cd ../
 }
 
 function install_opencv() {
     # install opencv (>= 3.0) from source
-    wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || echo "Failed to downlod opencv"
+    wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || error_end $? "Failed to downlod opencv. Check internet connection."
     tar xf 4.1.1.tar.gz
     cd opencv*
     mkdir build && cd $_
     cmake .. -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DBUILD_CUDA_STABS_=OFF -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_JASPER=OFF -DBUILD_OPENEXR=OFF -DBUILD_PACKAGE=ON -DBUILD_PERF=TESTS=OFF -DBUILD_SHARED=LIBS=ON -DBUILD_TBB=OFF -DBUILD_TESTS=OFF -DBUILD_WITH_DEBUG_INFO=ON -DBUILD_ZLIB=ON -DBUILD_openv_apps=ON -DBUILD_opencv_calib3d=ON-DBUILD_opencv_core=ON -DBUILD_opencv_world=OFF -DCMAKE_BUILD_TYPE=DEBUG -DWITH_1394=ON -DWITH_FFMPEG=ON -DWITH_JPEG=ON -DWITH_QT=ON -DWITH_V4L=ON  
     make
-    make install || echo "Failed to install OpenCV from source"
+    make install || error_end $? "Failed to install OpenCV from source"
 }
 
 function install_libraries() {
@@ -142,49 +145,48 @@ function install_libraries() {
     case "$DISTRIBU" in
         "fedora" )
             # update system
-            dnf -y update || echo "Failed to Update system. Check internet connection and Disk Space."
+            dnf -y update || error_end $? "Failed to Update system. Check internet connection and Disk Space."
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || echo "Failed to instlal some packages."
+            dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || error_end $? "Failed to instlal some packages."
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             install_ode_013
             ;;
         "ubuntu" )
-            apt update -qq -y || echo "Failed to update" 
-            apt upgrade -qq -y || echo "Failed to upgrade"
+            apt update -qq -y || error_end $? "Failed to update. Check your internet connection." 
+            apt upgrade -qq -y || error_end $? "Failed to upgrade. Please try later (dpkg may still working)"
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || echo "Failed to install some packages"
+            apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || error_end $? "Failed to install some packages"
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
             if [ $(cat /etc/os-release | grep VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g") == "16.04" ]; then
-                apt-get -qq -y install ${apt_pkg_opencv}
+                apt-get -qq -y install ${apt_pkg_opencv} || error_end $? "Failed to install dependency for OpenCV."
                 install_opencv
             fi;
 
             ;;
         "arch" )
             # update
-            yes | pacman -Syyu
+            yes | pacman -Syyu || error_end $? "Failed to Update system. Check internet connection and Disk Space."
 
-            pacman -S --noconfirm --needed base-devel
+            pacman -S --noconfirm --needed base-devel  || error_end $? "Failed to install base-devel"
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || echo "Failed to install some packages"
+            yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || error_end $? "Failed to install some packages"
 
             install_ode_013
             ;;
         * )
-            echo "Not supported.";
-            exit
+            error_end 1 "The OS you using (${DISTRIBU}) is not supported."
             ;;
     esac
 
     # install libraries for ssl-autorefs
     curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh > installDeps.sh
-    yes | bash installDeps.sh;
+    (yes | bash installDeps.sh) || error_end $? "Failed to install dependency for ssl-autorefs.";
 
     if ! ls /usr/local/lib/*vartypes* > /dev/null; then
         install_vartype
@@ -224,24 +226,24 @@ function build_ssl_tools() {
     done
 
     # build grSim , ssl-vision , ssl-refbox , ssl-logtools
-    git clone https://github.com/RoboCup-SSL/grSim.git || echo "Failed to clone grSim"
-    git clone https://github.com/RoboCup-SSL/ssl-vision.git || echo "Failed to clone ssl-vision"
-    git clone https://github.com/RoboCup-SSL/ssl-logtools.git || echo "Failed to clone ssl-logtools"
-    git clone https://github.com/RoboCup-SSL/ssl-autorefs.git --recursive|| echo "Failed to clone ssl-autorefs"
+    git clone https://github.com/RoboCup-SSL/grSim.git || error_end $? "Failed to clone grSim"
+    git clone https://github.com/RoboCup-SSL/ssl-vision.git || error_end $? "Failed to clone ssl-vision"
+    git clone https://github.com/RoboCup-SSL/ssl-logtools.git || error_end $? "Failed to clone ssl-logtools"
+    git clone https://github.com/RoboCup-SSL/ssl-autorefs.git --recursive|| error_end $? "Failed to clone ssl-autorefs"
 
     # grsim
     cd grSim && mkdir build && cd "$_"
-    cmake .. && make || echo "Failed to build grSim"
+    cmake .. && make || error_end $? "Failed to build grSim"
 
     # ssl-vision/graphicalClient
     cd ${SSL_DIR}/ssl-vision && mkdir build && cd "$_"
-    cmake .. -DUSE_QT5=true
-    make || echo "Failed to build ssl-vision"
+    cmake .. -DUSE_QT5=true || error_end $? "cmake configuration for ssl-vision failed"
+    make || error_end $? "Failed to build ssl-vision"
 
     # ssl-logtools
     cd ${SSL_DIR}/ssl-logtools && mkdir build && cd "$_"
-    cmake .. -DUSE_QT5=true
-    make || echo "Failed to build ssl-logtools"
+    cmake .. -DUSE_QT5=true || error_end $? "cmake configuration for ssl-logtools failed"
+    make || error_end $? "Failed to build ssl-logtools"
 
     cd ${SSL_DIR}/ssl-autorefs
     bash buildAll.sh
@@ -249,8 +251,8 @@ function build_ssl_tools() {
     # new ssl client (ssl-game-controller and so on)
     cd ${SSL_DIR}
     mkdir games && cd $_
-    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-game-controller/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'`
-    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-vision-client/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'`
+    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-game-controller/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'` || error_end $? "Failed to download ssl-game-controller."
+    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-vision-client/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'` || error_end $? "Failed to download ssl-vision-client."
     chmod +x ssl*
 }
 
@@ -269,13 +271,13 @@ function install_dev_tools() {
         "" | "y" | "Y" | "yes" | "Yes" | "YES" )
             case "$DISTRIBU" in
                 "fedora" )
-                    dnf -y install htop wireshark strace ltrace vim
+                    dnf -y install htop wireshark strace ltrace vim || error_end $? "Failed to install useful tools."
                     ;;
                 "ubuntu" )
-                    apt-get -qq -y install htop wireshark strace ltrace vim
+                    apt-get -qq -y install htop wireshark strace ltrace vim || error_end $? "Failed to install useful tools."
                     ;;
                 "arch" )
-                    yes | pacman -S htop wireshark-cli strace ltrace vim
+                    yes | pacman -S htop wireshark-cli strace ltrace vim || error_end $? "Failed to install useful tools."
                     ;;
                 * )
                     echo "Not supported.";
@@ -298,18 +300,18 @@ if [ $# -lt 1 ]; then
     echo "This installer will setup the tools for RoboCup-SSL in your computer."
 
     check_root
-    install_libraries || exit
-    su ${SUDO_USER} -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}" || exit
+    install_libraries
+    su ${SUDO_USER} -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}"
     install_dev_tools
 
     echo ""
     echo "Done."
 elif [ $1 == ${flag_build} ]; then
     if [ ${USER} == "root" ]; then
-        echo "[ERROR] invalid usage detected. please try again with no argment"
+        error_end 1 "invalid usage detected. please try again with no argment"
     else
         build_ssl_tools
     fi
 else
-    echo "[ERROR] invalid argment"
+    error_end 1 "invalid argment"
 fi
