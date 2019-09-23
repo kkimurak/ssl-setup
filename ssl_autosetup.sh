@@ -14,7 +14,7 @@ script_dir=$(cd $(dirname $0); pwd)
 function error_end {
     echo "[SSL-SETUP ERROR] $2"
     echo "[SSL-SETUP ERROR] process exits with code $1"
-    echo "[SSL-SETUP ERROR] Installation imcomplete."
+    echo "[SSL-SETUP ERROR] Installation incomplete."
     exit 1
 }
 
