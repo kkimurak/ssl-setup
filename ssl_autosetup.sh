@@ -9,8 +9,12 @@ set -Ceu
 
 script_dir=$(cd $(dirname $0); pwd)
 
+# $1 exit code that fails - use $?
+# $2 error message you want to show. It will be shown using `echo`
 function error_end {
-    echo "[ERROR] Installation imcomplete."
+    echo "[SSL-SETUP ERROR] $2"
+    echo "[SSL-SETUP ERROR] process exits with code $1"
+    echo "[SSL-SETUP ERROR] Installation imcomplete."
     exit 1
 }
 
