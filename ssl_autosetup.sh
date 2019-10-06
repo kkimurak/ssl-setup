@@ -150,7 +150,7 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || error_end $? "Failed to instlal some packages."
             
-            dnf -y install firefox google-noto-sans-cjk-jp-fontsr
+            dnf -y install firefox google-noto-sans-cjk-jp-fonts
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             install_ode_013
