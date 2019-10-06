@@ -138,6 +138,9 @@ function install_libraries() {
     mkdir -p "$path_tmp"
     cd "$path_tmp"
 
+    # trap : remove temporal directory
+    trap 'rm -rf ${path_tmp}; echo "Deleted temporal directory ${path_tmp}"; error_end 1 "proces killed"' 2 
+
     DISTRIBU=$(get_os_distribution)
     echo "You're using $DISTRIBU"
     case "$DISTRIBU" in
