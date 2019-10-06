@@ -134,8 +134,7 @@ function install_libraries() {
     local apt_pkg_ssl_autorefs="patch"
     local apt_pkg_opencv="build-essential libgtk2.0dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev"
 
-    path_tmp="$(mktemp)"
-    mkdir -p "$path_tmp"
+    path_tmp="$(mktemp -d)"
     cd "$path_tmp"
 
     # trap : remove temporal directory
