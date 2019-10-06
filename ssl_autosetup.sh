@@ -152,7 +152,7 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || error_end $? "Failed to instlal some packages."
             
-            dnf -y install $(${default_web_browser})
+            dnf -y install $(su ${SUDO_USER} -c "${default_web_browser}")
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             install_ode_013
@@ -164,7 +164,7 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || error_end $? "Failed to install some packages"
 
-            apt-get -qq -y install $(${default_web_browser})
+            apt-get -qq -y install $(su ${SUDO_USER} -c "${default_web_browser}")
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
@@ -183,7 +183,7 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || error_end $? "Failed to install some packages"
 
-            yes | pacman -S $(${default_web_browser})
+            yes | pacman -S $(su ${SUDO_USER} -c "${default_web_browser}")
             
             install_ode_013
             ;;
