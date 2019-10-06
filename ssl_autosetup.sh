@@ -114,20 +114,22 @@ function install_libraries() {
     # temporary folder to build ODE, vartypes
     local path_tmp=/home/${SUDO_USER}/Documents/sslinst_tmp/
 
+    local default_web_browser="xdg-settings get default-web-browser | sed 's:\.desktop::g'"
+
     # packages required to run this script
-    local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq"
+    local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq xdg-utils"
     local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel"
     local dnf_pkg_ssl_vision="qt-devel eigen3 libjpeg libpng v4l-utils libdc1394 libdc1394-devel protobuf-compiler protobuf-devel opencv-devel freeglut-devel zlib"
     local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
     local dnf_pkg_ssl_autoref="patch"
 
-    local pacman_pkg_script="curl git cmake make gcc jq wget"
+    local pacman_pkg_script="curl git cmake make gcc jq wget xdg-utils"
     local pacman_pkg_grsim="mesa glu ode qt5-base protobuf boost"
     local pacman_pkg_ssl_vision="qt5-base eigen protobuf libdc1394 jsoncpp v4l-utils opencv"
     local pacman_pkg_ssl_logtools="protobuf zlib boost"
     local pacman_pkg_ssl_autoref="patch"
 
-    local apt_pkg_script="curl git cmake make gcc jq wget"
+    local apt_pkg_script="curl git cmake make gcc jq wget xdg-utils"
     local apt_pkg_grsim="build-essential qt5-default libqt5opengl5-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-dev"
     local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
     local apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
@@ -149,6 +151,8 @@ function install_libraries() {
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || error_end $? "Failed to instlal some packages."
+            
+            dnf -y install firefox google-noto-sans-cjk-jp-fontsr
 
             # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
             install_ode_013
@@ -159,6 +163,8 @@ function install_libraries() {
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || error_end $? "Failed to install some packages"
+
+            apt-get -qq -y install firefox fonts-noto-cjk
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
@@ -177,6 +183,8 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || error_end $? "Failed to install some packages"
 
+            yes | pacman -S --noconfirm firefox noto-fonts-cjk
+            
             install_ode_013
             ;;
         * )
@@ -284,7 +292,7 @@ function install_dev_tools() {
                     exit
                 ;;
             esac
-            xdg-open https://qiita.com/mfujimori/items/9fd41bcd8d1ce9170301
+            su ${SUDO_USER} -c "xdg-open https://qiita.com/mfujimori/items/9fd41bcd8d1ce9170301 &"
             ;;
         * )
             echo "Didn't install these tools."
