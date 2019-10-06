@@ -114,8 +114,6 @@ function install_libraries() {
     # temporary folder to build ODE, vartypes
     local path_tmp=/home/${SUDO_USER}/Documents/sslinst_tmp/
 
-    local default_web_browser="xdg-settings get default-web-browser | sed 's:\.desktop::g'"
-
     # packages required to run this script
     local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq xdg-utils"
     local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel"
