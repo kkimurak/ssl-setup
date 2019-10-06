@@ -115,19 +115,19 @@ function install_libraries() {
     local path_tmp=/home/${SUDO_USER}/Documents/sslinst_tmp/
 
     # packages required to run this script
-    local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq"
+    local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq xdg-utils"
     local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel"
     local dnf_pkg_ssl_vision="qt-devel eigen3 libjpeg libpng v4l-utils libdc1394 libdc1394-devel protobuf-compiler protobuf-devel opencv-devel freeglut-devel zlib"
     local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
     local dnf_pkg_ssl_autoref="patch"
 
-    local pacman_pkg_script="curl git cmake make gcc jq wget"
+    local pacman_pkg_script="curl git cmake make gcc jq wget xdg-utils"
     local pacman_pkg_grsim="mesa glu ode qt5-base protobuf boost"
     local pacman_pkg_ssl_vision="qt5-base eigen protobuf libdc1394 jsoncpp v4l-utils opencv"
     local pacman_pkg_ssl_logtools="protobuf zlib boost"
     local pacman_pkg_ssl_autoref="patch"
 
-    local apt_pkg_script="curl git cmake make gcc jq wget"
+    local apt_pkg_script="curl git cmake make gcc jq wget xdg-utils"
     local apt_pkg_grsim="build-essential qt5-default libqt5opengl5-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-dev"
     local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
     local apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
