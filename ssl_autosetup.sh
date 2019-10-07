@@ -132,7 +132,7 @@ function install_libraries() {
     local apt_pkg_ssl_vision="libqt4-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
     local apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
     local apt_pkg_ssl_autorefs="patch"
-    local apt_pkg_opencv="build-essential libgtk2.0dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev"
+    local apt_pkg_opencv="build-essential libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev"
 
     if [ ! -e "$path_tmp" ]
     then
