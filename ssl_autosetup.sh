@@ -112,7 +112,7 @@ function install_opencv() {
 
 function install_libraries() {
     # temporary folder to build ODE, vartypes
-    local path_tmp=/home/${SUDO_USER}/Documents/sslinst_tmp/
+    local path_tmp
 
     # packages required to run this script
     local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq xdg-utils"
@@ -134,11 +134,11 @@ function install_libraries() {
     local apt_pkg_ssl_autorefs="patch"
     local apt_pkg_opencv="build-essential libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev"
 
-    if [ ! -e "$path_tmp" ]
-    then
-        mkdir -p "$path_tmp"
-    fi
+    path_tmp="$(mktemp -d)"
     cd "$path_tmp"
+
+    # trap : remove temporal directory
+    trap 'rm -rf ${path_tmp}; echo "Deleted temporal directory ${path_tmp}"; error_end 1 "proces killed"' 2 
 
     DISTRIBU=$(get_os_distribution)
     echo "You're using $DISTRIBU"
