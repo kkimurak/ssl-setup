@@ -243,7 +243,7 @@ function build_ssl_tools() {
 
     # ssl-vision/graphicalClient
     cd ${SSL_DIR}/ssl-vision && mkdir build && cd "$_"
-    cmake .. -DUSE_QT5=true || error_end $? "cmake configuration for ssl-vision failed"
+    cmake .. || error_end $? "cmake configuration for ssl-vision failed"
     make || error_end $? "Failed to build ssl-vision"
 
     # ssl-logtools
