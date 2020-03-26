@@ -298,6 +298,21 @@ function install_dev_tools() {
     esac
 }
 
+function open_ssl_rules_web {
+    RULE_URL_OFFICIAL="https://robocup-ssl.github.io/ssl-rules"
+    RULE_URL_JA_JP="https://kkimurak.github.io/ssl-rules-jp"
+    RULE_TO_OPEN=""
+    country_code="$(curl -Ss https://ipinfo.io/ | jq -r .country)"
+    case "${country_code}" in
+        "JP" )
+            RULE_TO_OPEN="${RULE_URL_JA_JP}"
+            ;;
+        * )
+            RULE_TO_OPEN="${RULE_URL_OFFICIAL}"
+    esac
+    su "${SUDO_USER}" -c "xdg-open ${RULE_TO_OPEN} 2>/dev/null &"
+}
+
 
 # Script start from here
 flag_build="--rec_to_build"
@@ -312,6 +327,7 @@ if [ $# -lt 1 ]; then
 
     echo ""
     echo "Done."
+    open_ssl_rules_web
 elif [ $1 == ${flag_build} ]; then
     if [ ${USER} == "root" ]; then
         error_end 1 "invalid usage detected. please try again with no argment"
