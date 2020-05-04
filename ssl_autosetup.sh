@@ -257,9 +257,10 @@ function build_ssl_tools() {
     # new ssl client (ssl-game-controller and so on)
     cd ${SSL_DIR}
     mkdir games && cd $_
-    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-game-controller/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'` || error_end $? "Failed to download ssl-game-controller."
-    wget `curl -s https://api.github.com/repos/robocup-ssl/ssl-vision-client/releases | jq -r '.[0].assets[] | select(.name | test("linux_amd64")) | .browser_download_url'` || error_end $? "Failed to download ssl-vision-client."
-    chmod +x ssl*
+    wget https://raw.githubusercontent.com/kkimurak/get-latest-ssl-tools/master/get_latest_ssl_tools.sh
+    chmod +x get_latest_ssl_tools.sh
+    ./get_latest_ssl_tools.sh game-controller
+    ./get_latest_ssl_tools.sh vision-client
 }
 
 function install_dev_tools() {
