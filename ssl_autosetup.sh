@@ -262,7 +262,7 @@ function build_ssl_tools() {
     # new ssl client (ssl-game-controller and so on)
     cd ${SSL_DIR}
     mkdir games && cd $_
-    wget https://raw.githubusercontent.com/kkimurak/get-latest-ssl-tools/master/get_latest_ssl_tools.sh
+    wget -q --show-progress https://raw.githubusercontent.com/kkimurak/get-latest-ssl-tools/master/get_latest_ssl_tools.sh
     chmod +x get_latest_ssl_tools.sh
     ./get_latest_ssl_tools.sh game-controller
     ./get_latest_ssl_tools.sh vision-client
