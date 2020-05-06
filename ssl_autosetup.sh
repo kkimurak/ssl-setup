@@ -192,6 +192,11 @@ function install_libraries() {
 
     # install libraries for ssl-autorefs
     curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh > installDeps.sh
+
+    # patch for ubuntu 20.04 : libwxgtk3.0-dev is renamed to libwxgtk3.0-gtk3-dev
+    if [ $(cat /etc/os-release | grep VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g") == "20.04" ]; then
+        cat installDeps.sh | (rm installDeps.sh; sed "s:libwxgtk3.0-dev:libwxgtk3.0-gtk3-dev:g" > installDeps.sh)
+    fi
     (yes | bash installDeps.sh) || error_end $? "Failed to install dependency for ssl-autorefs.";
 
     if ! ls /usr/local/lib/*vartypes* > /dev/null; then
