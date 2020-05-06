@@ -17,7 +17,7 @@ Just for beginner.
 Only tested on
 
 * Fedora 30 or later
-* Ubuntu 18.04 or later (to support QT5 by default)
+* Ubuntu 18.04, 19.04, 20.04 (to support QT5 by default)
 * Arch Linux
 
 ## Running
