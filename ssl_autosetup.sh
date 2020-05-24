@@ -116,7 +116,7 @@ function install_libraries() {
 
     # packages required to run this script
     local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq xdg-utils"
-    local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel"
+    local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel ode-double ode-devel"
     local dnf_pkg_ssl_vision="qt-devel eigen3 libjpeg libpng v4l-utils libdc1394 libdc1394-devel protobuf-compiler protobuf-devel opencv-devel freeglut-devel zlib"
     local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
     local dnf_pkg_ssl_autoref="patch"
@@ -151,9 +151,6 @@ function install_libraries() {
             dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || error_end $? "Failed to instlal some packages."
             
             dnf -y install firefox google-noto-sans-cjk-jp-fonts
-
-            # in fedora, you have to build ODE-0.13 from source. new version of ODE will cause freeze of grSim
-            install_ode_013
             ;;
         "ubuntu" )
             apt update -qq -y || error_end $? "Failed to update. Check your internet connection." 
