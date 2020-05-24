@@ -14,9 +14,9 @@ Just for beginner.
 [ssl-vision-client](https://github.com/RoboCup-SSL/ssl-vision-client)  
 [ssl-autorefs](https://github.com/RoboCup-SSL/ssl-autorefs)
 
-Only tested on
+Supported OS:
 
-* Fedora 30 or later
+* Fedora 31 or later
 * Ubuntu 18.04, 19.04, 20.04 (to support QT5 by default)
 * Arch Linux
 
