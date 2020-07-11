@@ -10,11 +10,11 @@ set -Ceu
 script_dir="$(cd "$(dirname "$0")"; pwd)"
 
 # $1 exit code that fails - use $?
-# $2 error message you want to show. It will be shown using `echo`
+# $2 error message you want to show. It will be shown using `printf`
 error_end() {
-    echo "[SSL-SETUP ERROR] $2"
-    echo "[SSL-SETUP ERROR] process exits with code $1"
-    echo "[SSL-SETUP ERROR] Installation incomplete."
+    printf "[SSL-SETUP ERROR] %s\n" "$2"
+    printf "[SSL-SETUP ERROR] process exits with code %s\n" "$1"
+    printf "[SSL-SETUP ERROR] Installation incomplete.\n"
     exit 1
 }
 
@@ -72,11 +72,11 @@ get_os_distribution() {
         distri_name="gentoo"
     else
         # Other
-        echo "unkown distribution"
+        printf "unkown distribution\n"
         distri_name="unkown"
     fi
 
-    echo "$distri_name"
+    printf "%s" "$distri_name"
 }
 
 install_ode_013() {
@@ -138,10 +138,10 @@ install_libraries() {
     cd "$path_tmp"
 
     # trap : remove temporal directory
-    trap 'rm -rf ${path_tmp}; echo "Deleted temporal directory ${path_tmp}"; error_end 1 "proces killed"' 2 
+    trap 'rm -rf ${path_tmp}; printf "Deleted temporal directory %s\n" "${path_tmp}"; error_end 1 "proces killed"' 2 
 
     DISTRIBU=$(get_os_distribution)
-    echo "You're using $DISTRIBU"
+    printf "You're using %s\n" "$DISTRIBU"
     case "$DISTRIBU" in
         "fedora" )
             # update system
@@ -206,19 +206,19 @@ install_libraries() {
 build_ssl_tools() {
     ssl_dir_default="/home/${USER}/Documents/robocup/tools"
 
-    echo "Download and build RoboCup-SSL Tools"
-    echo "grSim , ssl-vision , ssl-logtools , ssl-game-controller , ssl-vision-client"
-    echo ""
-    echo "Where do you want to place these application?"
-    echo "(if you're a beginner, just press Enter)"
-    echo -n "[${ssl_dir_default}] >"
+    printf "Download and build RoboCup-SSL Tools\n"
+    printf "grSim , ssl-vision , ssl-logtools , ssl-game-controller , ssl-vision-client\n"
+    printf "\n"
+    printf "Where do you want to place these application?\n"
+    printf "(if you're a beginner, just press Enter)\n"
+    printf "[%s] > " "${ssl_dir_default}"
     while :
     do
-    read -r -t 60 SSL_DIR || if [ "$?" == "142" ] ; then echo " set to default..."; fi
+    read -r -t 60 SSL_DIR || case "$?" in "142") printf " set to default...\n"; esac
     case $SSL_DIR in
         # if typed so it seems to be not problem, but can't do "git clone"
         "home/" | "home" | "/home" | "/home/" )
-            echo "You Don't have permission to access. Please use /home/<username>/ or just type Enter.";;
+            printf "You Don't have permission to access. Please use /home/<username>/ or just type Enter.\n";;
         # other case
         * )
             # nothing typed
@@ -226,7 +226,7 @@ build_ssl_tools() {
             then
                 SSL_DIR=${ssl_dir_default};
             fi
-            echo "install for $SSL_DIR."
+            printf "install for %s" "$SSL_DIR."
             mkdir -p "$SSL_DIR" && cd "$SSL_DIR" && break
             
         ;;
@@ -267,16 +267,16 @@ build_ssl_tools() {
 }
 
 install_dev_tools() {
-    ins_tools=""
-    echo ""
-    echo "Do you want to install these usefull tools :"
-    echo "vim - Text/Code Editor"
-    echo "wireshark - network protocol analyzer"
-    echo "htop - performance analyzer"
-    echo "strace & ltrace - debug tools"
-    echo -n "[Y/n]:"
+    ins_tools
+    printf "\n"
+    printf "Do you want to install these usefull tools :\n"
+    printf "vim - Text/Code Editor\n"
+    printf "wireshark - network protocol analyzer\n"
+    printf "htop - performance analyze\n"
+    printf "strace & ltrace - debug tools\n"
+    printf "[Y/n]:"
 
-    read -r -t 60 ins_tools || case "$?" in "142") echo " set to default...";; esac
+    read -r -t 60 ins_tools || case "$?" in "142") printf " set to default...\n";; esac
     case "$ins_tools" in
         "" | "y" | "Y" | "yes" | "Yes" | "YES" )
             case "$DISTRIBU" in
@@ -290,14 +290,14 @@ install_dev_tools() {
                     yes | pacman -S htop wireshark-cli strace ltrace vim || error_end $? "Failed to install useful tools."
                     ;;
                 * )
-                    echo "Not supported.";
+                    printf "Not supported.\n";
                     exit
                 ;;
             esac
             su "${SUDO_USER}" -c "xdg-open https://qiita.com/mfujimori/items/9fd41bcd8d1ce9170301 &"
             ;;
         * )
-            echo "Didn't install these tools."
+            printf "Didn't install these tools.\n"
             ;;
     esac
 }
@@ -322,15 +322,15 @@ open_ssl_rules_web() {
 flag_build="--rec_to_build"
 
 if [ $# -lt 1 ]; then
-    echo "This installer will setup the tools for RoboCup-SSL in your computer."
+    printf "This installer will setup the tools for RoboCup-SSL in your computer.\n"
 
     check_root
     install_libraries
     su "${SUDO_USER}" -c "cd ${script_dir}; sh ssl_autosetup.sh ${flag_build}"
     install_dev_tools
 
-    echo ""
-    echo "Done."
+    printf "\n"
+    printf "Done.\n"
     open_ssl_rules_web
 else
     case "$1" in
