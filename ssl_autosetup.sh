@@ -7,29 +7,29 @@
 
 set -Ceu
 
-script_dir=$(cd $(dirname $0); pwd)
+script_dir="$(cd "$(dirname "$0")"; pwd)"
 
 # $1 exit code that fails - use $?
 # $2 error message you want to show. It will be shown using `echo`
-function error_end {
+error_end() {
     echo "[SSL-SETUP ERROR] $2"
     echo "[SSL-SETUP ERROR] process exits with code $1"
     echo "[SSL-SETUP ERROR] Installation incomplete."
     exit 1
 }
 
-function check_root {
+check_root() {
     if [ "$(whoami)" != "root" ]; then
         error_end 1 "Please run as root!  (e.g. $ sudo bash ssl_autosetup.sh"
     fi
 }
 
-function get_os_distribution() {
+get_os_distribution() {
     # Copyright (c) 2016 Kohei Arao
     # https://github.com/koara-local/dotfiles
     # Released under the Unlicense
     # http://unlicense.org/
-    local distri_name
+    distri_name=""
 
     if   [ -e /etc/debian_version ] ||
          [ -e /etc/debian_release ]; then
@@ -79,7 +79,7 @@ function get_os_distribution() {
     echo "$distri_name"
 }
 
-function install_ode_013() {
+install_ode_013() {
     wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || error_end $? "Failed to download ode-0.13.tar.bz2. Check your internet connection."
     tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
     cd ode-0.13
@@ -89,7 +89,7 @@ function install_ode_013() {
     cd ../
 }
 
-function install_vartype() {
+install_vartype() {
     # install "vartypes" that required by grSim
     git clone https://github.com/jpfeltracco/vartypes.git || error_end $? "Failed to clone vartypes"
     cd vartypes
@@ -99,7 +99,7 @@ function install_vartype() {
     cd ../
 }
 
-function install_opencv() {
+install_opencv() {
     # install opencv (>= 3.0) from source
     wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || error_end $? "Failed to downlod opencv. Check internet connection."
     tar xf 4.1.1.tar.gz
@@ -110,29 +110,29 @@ function install_opencv() {
     make install || error_end $? "Failed to install OpenCV from source"
 }
 
-function install_libraries() {
+install_libraries() {
     # temporary folder to build ODE, vartypes
-    local path_tmp
+    path_tmp=""
 
     # packages required to run this script
-    local dnf_pkg_script="curl git cmake make gcc gcc-c++ jq xdg-utils"
-    local dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel ode-double ode-devel"
-    local dnf_pkg_ssl_vision="qt-devel eigen3 libjpeg libpng v4l-utils libdc1394 libdc1394-devel protobuf-compiler protobuf-devel opencv-devel freeglut-devel zlib"
-    local dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
-    local dnf_pkg_ssl_autoref="patch"
+    dnf_pkg_script="curl git cmake make gcc gcc-c++ jq xdg-utils"
+    dnf_pkg_grsim="mesa-libGL-devel mesa-libGLU-devel qt-devel protobuf-compiler protobuf-devel boost-devel ode-double ode-devel"
+    dnf_pkg_ssl_vision="qt-devel eigen3 libjpeg libpng v4l-utils libdc1394 libdc1394-devel protobuf-compiler protobuf-devel opencv-devel freeglut-devel zlib"
+    dnf_pkg_ssl_logtools="protobuf-compiler zlib-devel boost-program-options"
+    dnf_pkg_ssl_autoref="patch"
 
-    local pacman_pkg_script="curl git cmake make gcc jq wget xdg-utils"
-    local pacman_pkg_grsim="mesa glu ode qt5-base protobuf boost"
-    local pacman_pkg_ssl_vision="qt5-base eigen protobuf libdc1394 jsoncpp v4l-utils opencv"
-    local pacman_pkg_ssl_logtools="protobuf zlib boost"
-    local pacman_pkg_ssl_autoref="patch"
+    pacman_pkg_script="curl git cmake make gcc jq wget xdg-utils"
+    pacman_pkg_grsim="mesa glu ode qt5-base protobuf boost"
+    pacman_pkg_ssl_vision="qt5-base eigen protobuf libdc1394 jsoncpp v4l-utils opencv"
+    pacman_pkg_ssl_logtools="protobuf zlib boost"
+    pacman_pkg_ssl_autoref="patch"
 
-    local apt_pkg_script="curl git cmake make gcc jq wget xdg-utils"
-    local apt_pkg_grsim="build-essential qt5-default libqt5opengl5-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-dev"
-    local apt_pkg_ssl_vision="qtdeclarative5-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
-    local apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
-    local apt_pkg_ssl_autorefs="patch"
-    local apt_pkg_opencv="build-essential libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev"
+    apt_pkg_script="curl git cmake make gcc jq wget xdg-utils"
+    apt_pkg_grsim="build-essential qt5-default libqt5opengl5-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev libboost-dev"
+    apt_pkg_ssl_vision="qtdeclarative5-dev libeigen3-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev libv4l-0 libopencv-dev freeglut3-dev"
+    apt_pkg_ssl_logtools="libprotobuf-dev protobuf-compiler zlib1g-dev libboost-program-options-dev"
+    apt_pkg_ssl_autorefs="patch"
+    apt_pkg_opencv="build-essential libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libjpeg-dev libpng-dev libtiff-dev"
 
     path_tmp="$(mktemp -d)"
     cd "$path_tmp"
@@ -203,8 +203,8 @@ function install_libraries() {
     rm -r ${path_tmp}
 }
 
-function build_ssl_tools() {
-    local ssl_dir_default="/home/${USER}/Documents/robocup/tools"
+build_ssl_tools() {
+    ssl_dir_default="/home/${USER}/Documents/robocup/tools"
 
     echo "Download and build RoboCup-SSL Tools"
     echo "grSim , ssl-vision , ssl-logtools , ssl-game-controller , ssl-vision-client"
@@ -265,8 +265,8 @@ function build_ssl_tools() {
     ./get_latest_ssl_tools.sh vision-client
 }
 
-function install_dev_tools() {
-    local ins_tools
+install_dev_tools() {
+    ins_tools=""
     echo ""
     echo "Do you want to install these usefull tools :"
     echo "vim - Text/Code Editor"
@@ -301,7 +301,7 @@ function install_dev_tools() {
     esac
 }
 
-function open_ssl_rules_web {
+open_ssl_rules_web() {
     RULE_URL_OFFICIAL="https://robocup-ssl.github.io/ssl-rules"
     RULE_URL_JA_JP="https://kkimurak.github.io/ssl-rules-jp"
     RULE_TO_OPEN=""
