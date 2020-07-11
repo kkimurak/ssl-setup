@@ -89,16 +89,6 @@ function install_ode_013() {
     cd ../
 }
 
-function install_vartype() {
-    # install "vartypes" that required by grSim
-    git clone https://github.com/jpfeltracco/vartypes.git || error_end $? "Failed to clone vartypes"
-    cd vartypes
-    mkdir build && cd "$_"
-    cmake .. && make -s >/dev/null || error_end $? "Failed to build vartypes"
-    make install || error_end $? "Failed to install vartypes"
-    cd ../
-}
-
 function install_opencv() {
     # install opencv (>= 3.0) from source
     wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || error_end $? "Failed to downlod opencv. Check internet connection."
@@ -111,7 +101,7 @@ function install_opencv() {
 }
 
 function install_libraries() {
-    # temporary folder to build ODE, vartypes
+    # temporary folder to build ODE
     local path_tmp
 
     # packages required to run this script
@@ -196,9 +186,6 @@ function install_libraries() {
     fi
     (yes | bash installDeps.sh) || error_end $? "Failed to install dependency for ssl-autorefs.";
 
-    if ! ls /usr/local/lib/*vartypes* > /dev/null; then
-        install_vartype
-    fi
     cd ${script_dir}
     rm -r ${path_tmp}
 }
