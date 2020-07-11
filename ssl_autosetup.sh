@@ -148,7 +148,7 @@ install_libraries() {
             dnf -y update || error_end $? "Failed to Update system. Check internet connection and Disk Space."
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || error_end $? "Failed to instlal some packages."
+            dnf -y install "${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref}" || error_end $? "Failed to instlal some packages."
             
             dnf -y install firefox google-noto-sans-cjk-jp-fonts
             ;;
@@ -157,7 +157,7 @@ install_libraries() {
             apt upgrade -qq -y || error_end $? "Failed to upgrade. Please try later (dpkg may still working)"
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || error_end $? "Failed to install some packages"
+            apt-get -qq -y install "${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs}" || error_end $? "Failed to install some packages"
 
             apt-get -qq -y install firefox fonts-noto-cjk
 
@@ -176,7 +176,7 @@ install_libraries() {
             pacman -S --noconfirm --needed base-devel  || error_end $? "Failed to install base-devel"
 
             # install most of required packages for Robocup-SSL official tools (without Autoref)
-            yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || error_end $? "Failed to install some packages"
+            yes | pacman -S "${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref}" --needed || error_end $? "Failed to install some packages"
 
             yes | pacman -S --noconfirm firefox noto-fonts-cjk
             
@@ -199,8 +199,8 @@ install_libraries() {
     if ! ls /usr/local/lib/*vartypes* > /dev/null; then
         install_vartype
     fi
-    cd ${script_dir}
-    rm -r ${path_tmp}
+    cd "${script_dir}"
+    rm -r "${path_tmp}"
 }
 
 build_ssl_tools() {
@@ -227,7 +227,7 @@ build_ssl_tools() {
                 SSL_DIR=${ssl_dir_default};
             fi
             echo "install for $SSL_DIR."
-            mkdir -p "$SSL_DIR" && cd "$_" && break
+            mkdir -p "$SSL_DIR" && cd "$SSL_DIR" && break
             
         ;;
     esac
@@ -245,20 +245,20 @@ build_ssl_tools() {
     make || error_end $? "Failed to build grSim"
 
     # ssl-vision/graphicalClient
-    cd ${SSL_DIR}/ssl-vision && mkdir build && cd build
+    cd "${SSL_DIR}"/ssl-vision && mkdir build && cd build
     cmake .. || error_end $? "cmake configuration for ssl-vision failed"
     make || error_end $? "Failed to build ssl-vision"
 
     # ssl-logtools
-    cd ${SSL_DIR}/ssl-logtools && mkdir build && cd build
+    cd "${SSL_DIR}"/ssl-logtools && mkdir build && cd build
     cmake .. -DUSE_QT5=true || error_end $? "cmake configuration for ssl-logtools failed"
     make || error_end $? "Failed to build ssl-logtools"
 
-    cd ${SSL_DIR}/ssl-autorefs
+    cd "${SSL_DIR}"/ssl-autorefs
     bash buildAll.sh
 
     # new ssl client (ssl-game-controller and so on)
-    cd ${SSL_DIR}
+    cd "${SSL_DIR}"
     mkdir games && cd games
     wget -q --show-progress https://raw.githubusercontent.com/kkimurak/get-latest-ssl-tools/master/get_latest_ssl_tools.sh
     chmod +x get_latest_ssl_tools.sh
@@ -294,7 +294,7 @@ install_dev_tools() {
                     exit
                 ;;
             esac
-            su ${SUDO_USER} -c "xdg-open https://qiita.com/mfujimori/items/9fd41bcd8d1ce9170301 &"
+            su "${SUDO_USER}" -c "xdg-open https://qiita.com/mfujimori/items/9fd41bcd8d1ce9170301 &"
             ;;
         * )
             echo "Didn't install these tools."
@@ -326,7 +326,7 @@ if [ $# -lt 1 ]; then
 
     check_root
     install_libraries
-    su ${SUDO_USER} -c "cd ${script_dir}; bash ssl_autosetup.sh ${flag_build}"
+    su "${SUDO_USER}" -c "cd ${script_dir}; sh ssl_autosetup.sh ${flag_build}"
     install_dev_tools
 
     echo ""
