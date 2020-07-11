@@ -163,10 +163,10 @@ install_libraries() {
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
-            if [ $(cat /etc/os-release | grep VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g") == "16.04" ]; then
-                apt-get -qq -y install ${apt_pkg_opencv} || error_end $? "Failed to install dependency for OpenCV."
+            case "$(grep /etc/os-release VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g")" in "16.04")
+                apt-get -qq -y install "${apt_pkg_opencv}" || error_end $? "Failed to install dependency for OpenCV."
                 install_opencv
-            fi;
+            esac
 
             ;;
         "arch" )
@@ -191,9 +191,9 @@ install_libraries() {
     curl https://raw.githubusercontent.com/RoboCup-SSL/ssl-autorefs/master/installDeps.sh > installDeps.sh
 
     # patch for ubuntu 20.04 : libwxgtk3.0-dev is renamed to libwxgtk3.0-gtk3-dev
-    if [ $(cat /etc/os-release | grep VERSION_ID | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g") == "20.04" ]; then
+    case "$(grep -e "VERSION_ID" /etc/os-release  | sed -e "s:VERSION_ID=\"\([0-9]*.[0-9]*\)\":\1:g")" in "20.04" )
         cat installDeps.sh | (rm installDeps.sh; sed "s:libwxgtk3.0-dev:libwxgtk3.0-gtk3-dev:g" > installDeps.sh)
-    fi
+    esac
     (yes | bash installDeps.sh) || error_end $? "Failed to install dependency for ssl-autorefs.";
 
     if ! ls /usr/local/lib/*vartypes* > /dev/null; then
@@ -276,7 +276,7 @@ install_dev_tools() {
     echo "strace & ltrace - debug tools"
     echo -n "[Y/n]:"
 
-    read -r -t 60 ins_tools || if [ "$?" == "142" ] ; then echo " set to default..."; fi
+    read -r -t 60 ins_tools || case "$?" in "142") echo " set to default...";; esac
     case "$ins_tools" in
         "" | "y" | "Y" | "yes" | "Yes" | "YES" )
             case "$DISTRIBU" in
@@ -332,12 +332,17 @@ if [ $# -lt 1 ]; then
     echo ""
     echo "Done."
     open_ssl_rules_web
-elif [ $1 == ${flag_build} ]; then
-    if [ ${USER} == "root" ]; then
-        error_end 1 "invalid usage detected. please try again with no argment"
-    else
-        build_ssl_tools
-    fi
 else
-    error_end 1 "invalid argment"
+    case "$1" in
+    "${flag_build}")
+        case "${USER}" in
+        "root")
+            error_end 1 "invalid usage detected. please try again with no argment";;
+        *)
+            build_ssl_tools;;
+        esac
+        ;;
+    *)
+        error_end 1 "invalid argment"
+    esac
 fi
