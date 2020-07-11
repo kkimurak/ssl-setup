@@ -94,7 +94,8 @@ install_vartype() {
     git clone https://github.com/jpfeltracco/vartypes.git || error_end $? "Failed to clone vartypes"
     cd vartypes
     mkdir build && cd build
-    cmake .. && make -s >/dev/null || error_end $? "Failed to build vartypes"
+    cmake .. || error_end $? "Failed to configure vartypes"
+    make -s >/dev/null || error_end $? "Failed to build vartypes"
     make install || error_end $? "Failed to install vartypes"
     cd ../
 }
