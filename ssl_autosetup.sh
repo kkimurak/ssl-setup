@@ -140,7 +140,11 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             dnf -y install ${dnf_pkg_script} ${dnf_pkg_grsim} ${dnf_pkg_ssl_vision} ${dnf_pkg_ssl_logtools} ${dnf_pkg_ssl_autoref} || error_end $? "Failed to instlal some packages."
             
-            dnf -y install firefox google-noto-sans-cjk-jp-fonts
+            result=0
+            command -v "$(xdg-settings get default-web-browser | sed "s:.desktop::g")" 1>/dev/null 2>&1 || result="$?"
+            if [ "${result}" != "0" ]; then
+                dnf -y install firefox google-noto-sans-cjk-jp-fonts
+            fi
             ;;
         "ubuntu" )
             apt update -qq -y || error_end $? "Failed to update. Check your internet connection." 
@@ -148,8 +152,12 @@ function install_libraries() {
             
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             apt-get -qq -y install ${apt_pkg_script} ${apt_pkg_grsim} ${apt_pkg_ssl_vision} ${apt_pkg_ssl_logtools} ${apt_pkg_ssl_autorefs} || error_end $? "Failed to install some packages"
-
-            apt-get -qq -y install firefox fonts-noto-cjk
+            
+            result=0
+            command -v "$(xdg-settings get default-web-browser | sed "s:.desktop::g")" 1>/dev/null 2>&1 || result="$?"
+            if [ "${result}" != "0" ]; then
+                apt-get -qq -y install firefox fonts-noto-cjk
+            fi
 
             # if you're using ubuntu, you don't need to build ODE from source. Lucky you!
             # if you're using ubuntu 16.04LTS, you need to build opencv from source (apt package "libopencv-dev" is old to build ssl-vision)
@@ -168,8 +176,12 @@ function install_libraries() {
             # install most of required packages for Robocup-SSL official tools (without Autoref)
             yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || error_end $? "Failed to install some packages"
 
-            yes | pacman -S --noconfirm firefox noto-fonts-cjk
-            
+            result=0
+            command -v "$(xdg-settings get default-web-browser | sed "s:.desktop::g")" 1>/dev/null 2>&1 || result="$?"
+            if [ "${result}" != "0" ]; then
+                yes | pacman -S --noconfirm firefox noto-fonts-cjk
+            fi
+        
             install_ode_013
             ;;
         * )
