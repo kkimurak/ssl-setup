@@ -93,7 +93,7 @@ install_vartype() {
     # install "vartypes" that required by grSim
     git clone https://github.com/jpfeltracco/vartypes.git || error_end $? "Failed to clone vartypes"
     cd vartypes
-    mkdir build && cd "$_"
+    mkdir build && cd build
     cmake .. && make -s >/dev/null || error_end $? "Failed to build vartypes"
     make install || error_end $? "Failed to install vartypes"
     cd ../
@@ -104,7 +104,7 @@ install_opencv() {
     wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || error_end $? "Failed to downlod opencv. Check internet connection."
     tar xf 4.1.1.tar.gz
     cd opencv*
-    mkdir build && cd $_
+    mkdir build && cd build
     cmake .. -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DBUILD_CUDA_STABS_=OFF -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_JASPER=OFF -DBUILD_OPENEXR=OFF -DBUILD_PACKAGE=ON -DBUILD_PERF=TESTS=OFF -DBUILD_SHARED=LIBS=ON -DBUILD_TBB=OFF -DBUILD_TESTS=OFF -DBUILD_WITH_DEBUG_INFO=ON -DBUILD_ZLIB=ON -DBUILD_openv_apps=ON -DBUILD_opencv_calib3d=ON-DBUILD_opencv_core=ON -DBUILD_opencv_world=OFF -DCMAKE_BUILD_TYPE=DEBUG -DWITH_1394=ON -DWITH_FFMPEG=ON -DWITH_JPEG=ON -DWITH_QT=ON -DWITH_V4L=ON  
     make
     make install || error_end $? "Failed to install OpenCV from source"
@@ -240,16 +240,17 @@ build_ssl_tools() {
     git clone https://github.com/RoboCup-SSL/ssl-autorefs.git --recursive|| error_end $? "Failed to clone ssl-autorefs"
 
     # grsim
-    cd grSim && mkdir build && cd "$_"
-    cmake .. && make || error_end $? "Failed to build grSim"
+    cd grSim && mkdir build && cd build
+    cmake .. || error_end $? "cmake configuration for grSim failed"
+    make || error_end $? "Failed to build grSim"
 
     # ssl-vision/graphicalClient
-    cd ${SSL_DIR}/ssl-vision && mkdir build && cd "$_"
+    cd ${SSL_DIR}/ssl-vision && mkdir build && cd build
     cmake .. || error_end $? "cmake configuration for ssl-vision failed"
     make || error_end $? "Failed to build ssl-vision"
 
     # ssl-logtools
-    cd ${SSL_DIR}/ssl-logtools && mkdir build && cd "$_"
+    cd ${SSL_DIR}/ssl-logtools && mkdir build && cd build
     cmake .. -DUSE_QT5=true || error_end $? "cmake configuration for ssl-logtools failed"
     make || error_end $? "Failed to build ssl-logtools"
 
@@ -258,7 +259,7 @@ build_ssl_tools() {
 
     # new ssl client (ssl-game-controller and so on)
     cd ${SSL_DIR}
-    mkdir games && cd $_
+    mkdir games && cd games
     wget -q --show-progress https://raw.githubusercontent.com/kkimurak/get-latest-ssl-tools/master/get_latest_ssl_tools.sh
     chmod +x get_latest_ssl_tools.sh
     ./get_latest_ssl_tools.sh game-controller
