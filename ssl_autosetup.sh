@@ -79,16 +79,6 @@ function get_os_distribution() {
     echo "$distri_name"
 }
 
-function install_ode_013() {
-    wget https://jaist.dl.sourceforge.net/project/opende/ODE/0.13/ode-0.13.tar.bz2 || error_end $? "Failed to download ode-0.13.tar.bz2. Check your internet connection."
-    tar xf ode-0.13.tar.bz2 && rm ode-0.13.tar.bz2
-    cd ode-0.13
-    ./configure --disable-demos --enable-double-precision || error_end $? "ODE configuration failed"
-    make -s >/dev/null || error_end $? "Failed to build ode"
-    make install || error_end $? "Failed to install ode from source"
-    cd ../
-}
-
 function install_opencv() {
     # install opencv (>= 3.0) from source
     wget https://github.com/opencv/opencv/archive/4.1.1.tar.gz || error_end $? "Failed to downlod opencv. Check internet connection."
@@ -101,7 +91,7 @@ function install_opencv() {
 }
 
 function install_libraries() {
-    # temporary folder to build ODE
+    # temporary folder to build dependency
     local path_tmp
 
     # packages required to run this script
@@ -157,7 +147,6 @@ function install_libraries() {
                 apt-get -qq -y install ${apt_pkg_opencv} || error_end $? "Failed to install dependency for OpenCV."
                 install_opencv
             fi;
-
             ;;
         "arch" )
             # update
@@ -169,8 +158,6 @@ function install_libraries() {
             yes | pacman -S ${pacman_pkg_script} ${pacman_pkg_grsim} ${pacman_pkg_ssl_vision} ${pacman_pkg_ssl_logtools} ${pacman_pkg_ssl_autoref} --needed || error_end $? "Failed to install some packages"
 
             yes | pacman -S --noconfirm firefox noto-fonts-cjk
-            
-            install_ode_013
             ;;
         * )
             error_end 1 "The OS you using (${DISTRIBU}) is not supported."
